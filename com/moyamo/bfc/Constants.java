@@ -8,4 +8,6 @@ public interface Constants {
 	/** Title of the game */
 	final String GAME_NAME = "Born in Combat";
 	final int FRICTION=10;
+	final int GROUND=560;
+	final int GRAVITY=100;
 }

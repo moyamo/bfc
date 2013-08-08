@@ -25,6 +25,7 @@ public abstract class Player extends Entity implements InputHandle{
 	private static final int ATTACK_DELAY = 100;
 	private long timeSinceAttack = System.currentTimeMillis();
 	private Queue<Object> events;
+	private int jumpspeed;
 	
 	Player(int x, int y, int width, int height, int basicAttackDamage,
 			byte direction, int health, int reach) {
@@ -42,7 +43,7 @@ public abstract class Player extends Entity implements InputHandle{
 	 * @param timeDiff - time passed since move was called in milliseconds
 	 */
 	public void move(long timeDiff){
-		long offSet = 0;
+		int offSet = 0;
 		if (isMoving()){
 			offSet += getSpeed() * getDirection() * timeDiff / 1000;
 		}
@@ -59,6 +60,14 @@ public abstract class Player extends Entity implements InputHandle{
 			}
 		}
 		setX(getX() + (int)offSet);
+		int yOffSet = 0;
+		yOffSet = getYSpeed();
+		setY(getY() + yOffSet);
+		if (!onGround()) {
+			setYSpeed((int)(getYSpeed() + Constants.GRAVITY*timeDiff/1000));
+		} else {
+			setYSpeed(0);
+		}
 	}
 	
 	/**
@@ -71,7 +80,7 @@ public abstract class Player extends Entity implements InputHandle{
 			setMoving(false);
 			setAttacking(true);
 			if (getDirection() == 1){
-				events.add(new AttackEvent(basicAttackDamage, getX() + reach, getY() + 60, getDirection()));
+				events.add(new AttackEvent(basicAttackDamage, getX() + reach, getBasicYContact(), getDirection()));
 			} else {
 				events.add(new AttackEvent(basicAttackDamage,getX() + getWidth() - reach, getY() + 60, getDirection()));
 			}
@@ -85,6 +94,16 @@ public abstract class Player extends Entity implements InputHandle{
 			setHealth(getHealth()- e.getDamage());
 			setXSpeed(getXSpeed() + e.getDamage()*e.getDirection());
 		}
+	}
+	
+	private void jump(){
+		if (onGround()){
+			setYSpeed(getYSpeed() - getJumpspeed());
+		}
+	}
+	
+	private boolean onGround(){
+		return getY()+getHeight() >= Constants.GROUND;
 	}
 	
 	/**
@@ -104,6 +123,8 @@ public abstract class Player extends Entity implements InputHandle{
 			setMoving(true);
 		}else if (e.getInputString() == InputEvent.ATTACK1){
 			attack();
+		}else if (e.getInputString() == InputEvent.UP) {
+			jump();
 		}
 	}
 	
@@ -171,5 +192,13 @@ public abstract class Player extends Entity implements InputHandle{
 	public Object nextEvent(){
 		return events.poll();
 	}
-	
+	protected abstract int getBasicYContact();
+
+	protected int getJumpspeed() {
+		return jumpspeed;
+	}
+
+	protected void setJumpspeed(int jumpspeed) {
+		this.jumpspeed = jumpspeed;
+	}
 }

@@ -25,5 +25,11 @@ public class ChuckNorris extends Player{
 		super(x, y, 140 , 260, BASIC_ATTACK_DAMAGE, direction, START_HEALTH,
 				REACH);
 		setSpeed(300);
+		setJumpspeed(30);
+	}
+	
+	@Override 
+	protected int getBasicYContact() {
+		return getY() + 60;
 	}
 }
