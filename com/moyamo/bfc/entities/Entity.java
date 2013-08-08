@@ -16,6 +16,8 @@ import com.moyamo.bfc.logic.GameEngine;
 public class Entity {
 	private int x;
 	private int y;
+	private int xSpeed;
+	private int ySpeed;
 	private int width;
 	private int height;
 	private int direction;
@@ -75,5 +77,19 @@ public class Entity {
 	
 	protected void setMoving(boolean moving) {
 		this.moving = moving;
+	}
+	protected void setXSpeed(int x){
+		this.xSpeed = x;
+	}
+	protected void setYSpeed(int y){
+		this.ySpeed = y;
+	}
+	
+	protected int getXSpeed(){
+		return xSpeed;
+	}
+	
+	protected int getYSpeed(){
+		return ySpeed;
 	}
 }

@@ -1,13 +1,14 @@
 package com.moyamo.bfc.events;
 
 public class AttackEvent {
-	private int damage;
+	private int damage, direction;
 	private int x, y;
 	private int defenderID;
-	public AttackEvent(int damage, int x, int y){
+	public AttackEvent(int damage, int x, int y, int direction){
 		this.damage = damage;
 		this.x = x;
 		this.y = y;
+		this.direction = direction;
 	}
 	
 	public int getDamage(){
@@ -24,5 +25,8 @@ public class AttackEvent {
 	}
 	public int getDefenderID(){
 		return defenderID;
+	}
+	public int getDirection(){
+		return direction;
 	}
 }

@@ -3,6 +3,7 @@ package com.moyamo.bfc.entities;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import com.moyamo.bfc.Constants;
 import com.moyamo.bfc.debug.Out;
 import com.moyamo.bfc.events.AttackEvent;
 import com.moyamo.bfc.events.InputEvent;
@@ -41,10 +42,23 @@ public abstract class Player extends Entity implements InputHandle{
 	 * @param timeDiff - time passed since move was called in milliseconds
 	 */
 	public void move(long timeDiff){
+		long offSet = 0;
 		if (isMoving()){
-			long offSet = getSpeed() * getDirection() * timeDiff / 1000;
-			setX(getX() + (int)offSet);
+			offSet += getSpeed() * getDirection() * timeDiff / 1000;
 		}
+		offSet += getXSpeed();
+		if (getXSpeed() > 0){
+			setXSpeed(getXSpeed() - Constants.FRICTION);
+			if (getXSpeed() < 0){
+				setXSpeed(0);
+			}
+		} else {
+			setXSpeed(getXSpeed() + Constants.FRICTION);
+			if (getXSpeed() > 0){
+				setXSpeed(0);
+			}
+		}
+		setX(getX() + (int)offSet);
 	}
 	
 	/**
@@ -57,21 +71,19 @@ public abstract class Player extends Entity implements InputHandle{
 			setMoving(false);
 			setAttacking(true);
 			if (getDirection() == 1){
-				events.add(new AttackEvent(basicAttackDamage, getX() + reach, getY() + 60));
+				events.add(new AttackEvent(basicAttackDamage, getX() + reach, getY() + 60, getDirection()));
 			} else {
-				events.add(new AttackEvent(basicAttackDamage,getX() + getWidth() - reach, getY() + 60));
+				events.add(new AttackEvent(basicAttackDamage,getX() + getWidth() - reach, getY() + 60, getDirection()));
 			}
 			timeSinceAttack = currTime;
 		}
 	}
 
 	public void applyAttack(AttackEvent e){
-		Out.print("Punch: X and Y: "+ e.getX() + " " + e.getY());
-		Out.print("Player: X and Y: " + getX() + "->" + (getX() + getWidth()) +
-				" " + getY() + "->" + (getY() + getHeight()));
 		if (getX() < e.getX() && e.getX() < getX() + getWidth()
-		  && getY() < e.getY() && e.getY() < getY() + getHeight()){
-			setHealth(getHealth()- e.getDamage()); 
+		&& getY() < e.getY() && e.getY() < getY() + getHeight()){
+			setHealth(getHealth()- e.getDamage());
+			setXSpeed(getXSpeed() + e.getDamage()*e.getDirection());
 		}
 	}
 	

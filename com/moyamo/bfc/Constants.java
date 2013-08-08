@@ -7,4 +7,5 @@ public interface Constants {
 	final int BOARD_HEIGHT = 600;
 	/** Title of the game */
 	final String GAME_NAME = "Born in Combat";
+	final int FRICTION=10;
 }
