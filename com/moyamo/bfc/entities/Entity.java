@@ -1,6 +1,8 @@
 package com.moyamo.bfc.entities;
 
 import java.net.URI;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import com.moyamo.bfc.logic.GameEngine;
 
@@ -14,6 +16,8 @@ import com.moyamo.bfc.logic.GameEngine;
  *
  */
 public class Entity {
+	private Queue<Object> events;
+	private Queue<String> drawEvents;
 	private int x;
 	private int y;
 	private int xSpeed;
@@ -29,6 +33,8 @@ public class Entity {
 		this.height    = height;
 		this.width     = width;
 		this.direction = direction;
+		this.events = new LinkedList<Object>();
+		this.drawEvents = new LinkedList<String>();
 	}
 	
 	public int getX(){
@@ -91,5 +97,19 @@ public class Entity {
 	
 	protected int getYSpeed(){
 		return ySpeed;
+	}
+	protected void addEvent(Object e){
+		events.add(e);
+	}
+	public String nextDrawEvent(){
+		return drawEvents.poll();
+	}
+	
+	protected void addDrawEvent(String e){
+		drawEvents.add(e);
+	}
+	
+	public Object nextEvent(){
+		return events.poll();
 	}
 }

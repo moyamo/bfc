@@ -10,4 +10,5 @@ package com.moyamo.bfc;
  */
 public interface GameHolder {
 	public void notifyDraw();
+	public void addSprite(int id);
 }

@@ -11,6 +11,7 @@ public class InputEvent {
 	public final static String PLAYER1 = "p1";
 	public final static String PLAYER2 = "p2";
 	public final static String ATTACK1 = "a1";
+	public final static String ATTACK2 = "a2";
 	
 	public InputEvent (String inputString, String focus, boolean press) {
 		this.inputString = inputString;

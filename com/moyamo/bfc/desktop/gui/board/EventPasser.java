@@ -47,7 +47,13 @@ class EventPasser{
 			InputEvent le = new InputEvent(InputEvent.ATTACK1,
 					InputEvent.PLAYER1, true);
 			engine.pressEvent(le);
-		}else if (key == KeyEvent.VK_J) {
+		}else if (key == KeyEvent.VK_Q) {
+			InputEvent le = new InputEvent(InputEvent.ATTACK2,
+					InputEvent.PLAYER1, true);
+			engine.pressEvent(le);
+		}
+		
+		else if (key == KeyEvent.VK_J) {
 			InputEvent le = new InputEvent(InputEvent.LEFT, InputEvent.PLAYER2,
 					true);
 			engine.pressEvent(le);
@@ -65,6 +71,10 @@ class EventPasser{
 			engine.pressEvent(le);
 		}else if (key == KeyEvent.VK_U) {
 			InputEvent le = new InputEvent(InputEvent.ATTACK1,
+					InputEvent.PLAYER2, true);
+			engine.pressEvent(le);
+		}else if (key == KeyEvent.VK_O) {
+			InputEvent le = new InputEvent(InputEvent.ATTACK2,
 					InputEvent.PLAYER2, true);
 			engine.pressEvent(le);
 		}
@@ -95,7 +105,13 @@ class EventPasser{
 			InputEvent le = new InputEvent(InputEvent.ATTACK1,
 					InputEvent.PLAYER1, false);
 			engine.releaseEvent(le);
-		}else if (key == KeyEvent.VK_J) {
+		}else if (key == KeyEvent.VK_Q) {
+			InputEvent le = new InputEvent(InputEvent.ATTACK2,
+					InputEvent.PLAYER1, false);
+			engine.pressEvent(le);
+		}
+		
+		else if (key == KeyEvent.VK_J) {
 			InputEvent le = new InputEvent(InputEvent.LEFT, InputEvent.PLAYER2,
 					false);
 			engine.releaseEvent(le);
@@ -115,6 +131,10 @@ class EventPasser{
 			InputEvent le = new InputEvent(InputEvent.ATTACK1,
 					InputEvent.PLAYER2, false);
 			engine.releaseEvent(le);
+		}else if (key == KeyEvent.VK_O) {
+			InputEvent le = new InputEvent(InputEvent.ATTACK2,
+					InputEvent.PLAYER2, false);
+			engine.pressEvent(le);
 		}
 	}
 }

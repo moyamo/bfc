@@ -1,11 +1,11 @@
 package com.moyamo.bfc.desktop.gui.sprites;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.ImageObserver;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Observer;
 
 import javax.swing.ImageIcon;
 
@@ -25,9 +25,13 @@ public class ChuckSprite implements IDrawable{
 	private int xBounds;
 	private int yBounds;
 	private int width, height;
+	private boolean attacking;
+	private boolean shooting;
+	private ImageObserver observer;
 	
-	public ChuckSprite(int entityID){
+	public ChuckSprite(int entityID, ImageObserver observer){
 		this.entityID = entityID;
+		this.observer = observer;
 		try {
 			initImages();
 			BasicPNG png = new BasicPNG(chuckImages[0]);
@@ -40,8 +44,9 @@ public class ChuckSprite implements IDrawable{
 		
 	}
 	@Override
-	public void draw(Graphics g, long timeDiff, ImageObserver observer) {
+	public void draw(Graphics g, long timeDiff) {
 		try {
+			setDrawFlags();
 			doAnim(g,timeDiff,observer);
 		} catch (URISyntaxException | IOException e) {
 			// TODO Auto-generated catch block
@@ -70,8 +75,12 @@ public class ChuckSprite implements IDrawable{
 		                  "/com/moyamo/bfc/res/images/Chuck_Norris/chuckLeftP2.png").toURI();
 		URI chuckRightP2 = this.getClass().getResource(
 		                 "/com/moyamo/bfc/res/images/Chuck_Norris/chuckRightP2.png").toURI();
+		URI chuckRightGun = this.getClass().getResource(
+                "/com/moyamo/bfc/res/images/Chuck_Norris/chuckRightGun.png").toURI();
+		URI chuckLeftGun = this.getClass().getResource(
+                "/com/moyamo/bfc/res/images/Chuck_Norris/chuckLeftGun.png").toURI();
 		
-		chuckImages = new URI [10];
+		chuckImages = new URI [12];
 		chuckImages[0] = chuckLeft;
 		chuckImages[1] = chuckRight;
 		chuckImages[2] = chuckLeft1;
@@ -82,6 +91,8 @@ public class ChuckSprite implements IDrawable{
 		chuckImages[7] = chuckRightP1;
 		chuckImages[8] = chuckLeftP2;
 		chuckImages[9] = chuckRightP2;
+		chuckImages[10] = chuckLeftGun;
+		chuckImages[11] = chuckRightGun;
 	}
 	
 	/**
@@ -106,10 +117,14 @@ public class ChuckSprite implements IDrawable{
 			}else if (moving) { //If he is moving
 				imageIndex = (facing + 3)  / 2 + (animStep * 2 - 1);
 				animStep = (animStep == 1) ? 2 : 1;
-			}if (c.isAttacking()){
+			}if (attacking){
 				imageIndex = (facing + 3) / 2 + (animStep * 2 - 1) + 4;
 				animStep = (animStep == 1) ? 2 : 1;
-				c.setAttacking(false);
+				attacking = false;
+			}else if(shooting){
+				if (c.getDirection() == -1) imageIndex = 10;
+				else imageIndex = 11;
+				shooting = false;
 			}
 			animCount = ANIM_DELAY;
 		}else{
@@ -127,7 +142,20 @@ public class ChuckSprite implements IDrawable{
 		}
 		
 		g.drawImage(new ImageIcon(chuckImages[imageIndex].toURL()).getImage(),x,y,observer);
-		g.setColor(Color.GREEN);
 	}
-
+	
+	private void setDrawFlags(){
+		Player c = EntityStore.self().getCombatant(entityID);
+		for(String e = c.nextDrawEvent(); e != null; e = c.nextDrawEvent()) {
+			if (e.equals("attack")){
+				attacking = true;
+			} else if (e.equals("shoot")){
+				shooting = true;
+			}
+		}
+	}
+	@Override
+	public boolean destroyed() {
+		return false;
+	}
 }

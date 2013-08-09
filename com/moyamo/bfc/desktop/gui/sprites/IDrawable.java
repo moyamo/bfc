@@ -5,5 +5,6 @@ import java.awt.image.ImageObserver;
 
 
 public interface IDrawable{
-	public void draw(Graphics g, long timeDiff, ImageObserver observer);
+	public void draw(Graphics g, long timeDiff);
+	public boolean destroyed();
 }

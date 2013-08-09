@@ -4,10 +4,16 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 import com.moyamo.bfc.GameHolder;
+import com.moyamo.bfc.entities.Bullet;
 import com.moyamo.bfc.entities.ChuckNorris;
+import com.moyamo.bfc.entities.Entity;
+import com.moyamo.bfc.entities.IMovable;
 import com.moyamo.bfc.entities.Player;
 import com.moyamo.bfc.events.AttackEvent;
+import com.moyamo.bfc.events.DestroyedEvent;
 import com.moyamo.bfc.events.PlayerDeathEvent;
+import com.moyamo.bfc.events.ProjectileEvent;
+import com.moyamo.bfc.events.ProjectileEvent.projType;
 
 /**
  * This is the class that does all the calculations concerning the game. The main
@@ -23,6 +29,7 @@ public class GameEngine implements Runnable{
 	private AttackHandler aHandler; 
 	private EntityStore store = EntityStore.self();
 	private EventProcessor evProc = EventProcessor.self();
+	private CollisionDetector colDectect = new CollisionDetector();
 	/**
 	 * Creates and instance of the GameEngine. It requires a {@link com.moyamo.bfc.GameHolder GameHolder} to draw images.
 	 * 
@@ -66,11 +73,25 @@ public class GameEngine implements Runnable{
 			
 			for (int i = 0; i < 2; i++) {
 				Player player = store.getCombatant(i);
+				player.applyPassiveEffects(timeDiff);
 				player.move(timeDiff);
 				for(Object pEvent = player.nextEvent(); pEvent != null; pEvent = player.nextEvent()){
 					processEvent(i, pEvent);
 				}
 			}
+			
+			for (int i = 2; i < store.totalEntites(); i++){
+				Entity e = store.getEntity(i);
+				if (e == null) continue;
+				if (e instanceof IMovable){
+					IMovable m = (IMovable)e;
+					m.move(timeDiff);
+				}
+				for(Object pEvent = e.nextEvent(); pEvent != null; pEvent = e.nextEvent()){
+					processEvent(i, pEvent);
+				}
+			}
+			colDectect.checkCollisions();
 			parent.notifyDraw();
 			try {
 				Thread.sleep(20);
@@ -92,13 +113,21 @@ public class GameEngine implements Runnable{
 		setGameRunning(false);
 	}
 	
-	private void processEvent(int playerID, Object e) {
+	private void processEvent(int entityID, Object e) {
 		if (e instanceof AttackEvent){
-			((AttackEvent) e).setDefenderID(playerID ^ 0x1);
+			((AttackEvent) e).setDefenderID(entityID ^ 0x1);
 			aHandler.processAttack((AttackEvent)e);
 		} else if (e instanceof PlayerDeathEvent){
-			playerDeath(store.getCombatant(playerID));
+			playerDeath(store.getCombatant(entityID));
+		} else if (e instanceof ProjectileEvent){
+			ProjectileEvent p = (ProjectileEvent)e;
+			if(p.type == projType.BULLET){
+				int id = store.addEntity(new Bullet(p.origX, p.origY, p.speedX, p.speedY));
+				parent.addSprite(id);
+				colDectect.addBullet(id);
+			}
+		} else if (e instanceof DestroyedEvent) {
+			store.delEntity(entityID);
 		}
 	}
-
 }

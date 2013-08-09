@@ -1,5 +1,9 @@
 package com.moyamo.bfc.logic;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.moyamo.bfc.debug.Out;
 import com.moyamo.bfc.entities.Entity;
 import com.moyamo.bfc.entities.Player;
 
@@ -11,9 +15,11 @@ import com.moyamo.bfc.entities.Player;
 public class EntityStore{
 	private Player combatants[];
 	private static EntityStore instance;
-	private Entity entities[];
+	private List<Entity>entities;
 	
-	private EntityStore (){}
+	private EntityStore (){
+		entities = new ArrayList<Entity>();
+	}
 	
 	public static EntityStore self() {
 		if (instance == null) {
@@ -27,7 +33,7 @@ public class EntityStore{
 	}
 	
 	public Entity getEntity(int entityNo){
-		return entities[entityNo];
+		return entities.get(entityNo);
 	}
 	
 	Player[] getCombatants(){
@@ -41,5 +47,18 @@ public class EntityStore{
 		} else {
 			combatants[1] = combatant;
 		}
+		entities.add(combatant);
+	}
+	
+	void delEntity(int id){
+		entities.set(id, null);
+	}
+	
+	int addEntity(Entity e){
+		entities.add(e);
+		return entities.size() - 1;
+	}
+	int totalEntites(){
+		return entities.size();
 	}
 }

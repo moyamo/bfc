@@ -10,8 +10,9 @@ import javax.swing.ImageIcon;
 
 public class BGSprite implements IDrawable{
 	Image image;
-	
-	public BGSprite(URI image){
+	ImageObserver observer;
+	public BGSprite(URI image, ImageObserver observer){
+		this.observer = observer;
 		try {
 			this.image = new ImageIcon(image.toURL()).getImage();
 		} catch (MalformedURLException e) {
@@ -21,8 +22,13 @@ public class BGSprite implements IDrawable{
 	}
 	
 	@Override
-	public void draw(Graphics g, long timeDiff, ImageObserver observer) {
+	public void draw(Graphics g, long timeDiff) {
 			g.drawImage(image, 0, 0, observer);
+	}
+
+	@Override
+	public boolean destroyed() {
+		return false;
 	}
 	
 }

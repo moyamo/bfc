@@ -19,6 +19,11 @@ public class SpriteManager {
 	}
 	
 	public List<IDrawable> getSprites(){
+		for (int i = 0; i < spriteArray.size(); i++){
+			if (spriteArray.get(i).destroyed()){
+				spriteArray.remove(i);
+			}
+		}
 		return spriteArray;
 	}
 	

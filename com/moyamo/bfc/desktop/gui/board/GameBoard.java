@@ -14,9 +14,13 @@ import javax.swing.JComponent;
 import com.moyamo.bfc.Constants;
 import com.moyamo.bfc.GameHolder;
 import com.moyamo.bfc.desktop.gui.sprites.BGSprite;
+import com.moyamo.bfc.desktop.gui.sprites.BulletSprite;
 import com.moyamo.bfc.desktop.gui.sprites.ChuckSprite;
-import com.moyamo.bfc.desktop.gui.sprites.PlayerStatBar;
 import com.moyamo.bfc.desktop.gui.sprites.IDrawable;
+import com.moyamo.bfc.desktop.gui.sprites.PlayerStatBar;
+import com.moyamo.bfc.entities.Bullet;
+import com.moyamo.bfc.entities.Entity;
+import com.moyamo.bfc.logic.EntityStore;
 import com.moyamo.bfc.logic.EventProcessor;
 import com.moyamo.bfc.logic.GameEngine;
 import com.moyamo.bfc.logic.SpriteManager;
@@ -50,13 +54,13 @@ public class GameBoard extends JComponent implements GameHolder, Constants{
 		engine.start();
 		timeSince = System.currentTimeMillis();
 		try {
-			SpriteManager.self().addSprite(new BGSprite(this.getClass().getResource("/com/moyamo/bfc/res/images/Back/desert.png").toURI()));
+			SpriteManager.self().addSprite(new BGSprite(this.getClass().getResource("/com/moyamo/bfc/res/images/Back/desert.png").toURI(), this));
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		SpriteManager.self().addSprite(new ChuckSprite(0));
-		SpriteManager.self().addSprite(new ChuckSprite(1));
+		SpriteManager.self().addSprite(new ChuckSprite(0, this));
+		SpriteManager.self().addSprite(new ChuckSprite(1, this));
 		SpriteManager.self().addSprite(new PlayerStatBar(0));
 		SpriteManager.self().addSprite(new PlayerStatBar(1));
 
@@ -78,7 +82,7 @@ public class GameBoard extends JComponent implements GameHolder, Constants{
 		long timeDiff = System.currentTimeMillis() - timeSince;
 		while (iterator.hasNext()){
 			entity = iterator.next();
-			entity.draw(g, timeDiff, this);
+			entity.draw(g, timeDiff);
 		}
 		timeSince = System.currentTimeMillis();
 	}
@@ -103,5 +107,15 @@ public class GameBoard extends JComponent implements GameHolder, Constants{
 	@Override
 	public void notifyDraw() {
 		repaint();
+	}
+
+
+	@Override
+	public void addSprite(int id) {
+		Entity entity = EntityStore.self().getEntity(id);
+		if (entity instanceof Bullet){
+			SpriteManager.self().addSprite(new BulletSprite(id));
+		}
+
 	}
 }

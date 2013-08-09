@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import com.moyamo.bfc.Constants;
-import com.moyamo.bfc.debug.Out;
 import com.moyamo.bfc.events.AttackEvent;
 import com.moyamo.bfc.events.InputEvent;
 import com.moyamo.bfc.events.InputHandle;
@@ -16,16 +15,17 @@ import com.moyamo.bfc.events.PlayerDeathEvent;
  * @author Mohammed Yaseen Mowzer
  * @version 0.0.2
  */
-public abstract class Player extends Entity implements InputHandle{
+public abstract class Player extends Entity implements InputHandle, IMovable{
 	private int health;
 	private int speed;
 	private int basicAttackDamage;
-	private boolean attacking;
 	private int reach;	
 	private static final int ATTACK_DELAY = 100;
 	private long timeSinceAttack = System.currentTimeMillis();
-	private Queue<Object> events;
 	private int jumpspeed;
+	private double battleMomentum;
+	private double maxBattleMomentum;
+	private double battleMomentumRegen;
 	
 	Player(int x, int y, int width, int height, int basicAttackDamage,
 			byte direction, int health, int reach) {
@@ -33,7 +33,6 @@ public abstract class Player extends Entity implements InputHandle{
 		setHealth(health);
 		this.reach             = reach;
 		this.basicAttackDamage = basicAttackDamage;
-		this.events = new LinkedList<Object>();
 	}
 	
 	/**
@@ -48,13 +47,14 @@ public abstract class Player extends Entity implements InputHandle{
 			offSet += getSpeed() * getDirection() * timeDiff / 1000;
 		}
 		offSet += getXSpeed();
+		int resistence = onGround() ? Constants.FRICTION : Constants.AIR_RESISTENCE;
 		if (getXSpeed() > 0){
-			setXSpeed(getXSpeed() - Constants.FRICTION);
+				setXSpeed(getXSpeed() - resistence);
 			if (getXSpeed() < 0){
 				setXSpeed(0);
 			}
 		} else {
-			setXSpeed(getXSpeed() + Constants.FRICTION);
+				setXSpeed(getXSpeed() + resistence);
 			if (getXSpeed() > 0){
 				setXSpeed(0);
 			}
@@ -70,6 +70,10 @@ public abstract class Player extends Entity implements InputHandle{
 		}
 	}
 	
+	public void applyPassiveEffects(long timeDiff){
+		setMomentum(battleMomentum + (double)(battleMomentumRegen*timeDiff/1000));
+	}
+	
 	/**
 	 * Causes the player to do a basic attack. If overided you should super this
 	 * method, unless you send your own action event and set attacking true.
@@ -78,22 +82,25 @@ public abstract class Player extends Entity implements InputHandle{
 		long currTime = System.currentTimeMillis();
 		if (currTime - timeSinceAttack > ATTACK_DELAY){
 			setMoving(false);
-			setAttacking(true);
+			setAttacking();
 			if (getDirection() == 1){
-				events.add(new AttackEvent(basicAttackDamage, getX() + reach, getBasicYContact(), getDirection()));
+				addEvent(new AttackEvent(basicAttackDamage, getX() + reach, getBasicYContact(), getDirection()));
 			} else {
-				events.add(new AttackEvent(basicAttackDamage,getX() + getWidth() - reach, getY() + 60, getDirection()));
+				addEvent(new AttackEvent(basicAttackDamage,getX() + getWidth() - reach, getY() + 60, getDirection()));
 			}
 			timeSinceAttack = currTime;
 		}
 	}
 
-	public void applyAttack(AttackEvent e){
+	public boolean applyAttack(AttackEvent e){
 		if (getX() < e.getX() && e.getX() < getX() + getWidth()
 		&& getY() < e.getY() && e.getY() < getY() + getHeight()){
 			setHealth(getHealth()- e.getDamage());
-			setXSpeed(getXSpeed() + e.getDamage()*e.getDirection());
+			setXSpeed(getXSpeed() + e.getDamage()*e.getDirection()/2);
+			setMomentum(battleMomentum + battleMomentumRegen/2);
+			return true;
 		}
+		return false;
 	}
 	
 	private void jump(){
@@ -104,14 +111,6 @@ public abstract class Player extends Entity implements InputHandle{
 	
 	private boolean onGround(){
 		return getY()+getHeight() >= Constants.GROUND;
-	}
-	
-	/**
-	 * Causes the player to stop a basic attack. If overided you should super 
-	 * this method, unless you set attacking false.
-	 */
-	protected void notAttack() { 
-		//setAttacking(false);
 	}
 	
 	public void pressEvent(InputEvent e) {
@@ -132,8 +131,6 @@ public abstract class Player extends Entity implements InputHandle{
 		if (e.getInputString() == InputEvent.LEFT ||
 			e.getInputString() == InputEvent.RIGHT) {
 			setMoving(false);
-		}else if (e.getInputString() == InputEvent.ATTACK1){
-			notAttack();
 		}
 	}
 	public int getHealth() {
@@ -158,12 +155,8 @@ public abstract class Player extends Entity implements InputHandle{
 		this.speed = speed;
 	}
 
-	public boolean isAttacking() {
-		return attacking;
-	}
-
-	public void setAttacking(boolean attacking) {
-		this.attacking = attacking;
+	private void setAttacking() {
+		addDrawEvent("attack");
 	}
 
 	public int getReach() {
@@ -184,14 +177,11 @@ public abstract class Player extends Entity implements InputHandle{
 	
 	protected void setHealth(int h){
 		if (h <= 0){
-			events.add(new PlayerDeathEvent());
+			addEvent(new PlayerDeathEvent());
 		}
 		this.health = h;
 	}
-	
-	public Object nextEvent(){
-		return events.poll();
-	}
+
 	protected abstract int getBasicYContact();
 
 	protected int getJumpspeed() {
@@ -201,4 +191,26 @@ public abstract class Player extends Entity implements InputHandle{
 	protected void setJumpspeed(int jumpspeed) {
 		this.jumpspeed = jumpspeed;
 	}
+	
+	public double getMomentum(){
+		return battleMomentum;
+	}
+	
+	protected void setMomentum(double m){
+		if (m > maxBattleMomentum){
+			this.battleMomentum = maxBattleMomentum;
+		} else if (m < 0){
+			this.battleMomentum = 0;
+		} else {
+			this.battleMomentum = m;
+		}
+	}
+	protected void setMaxMomentum(int m){
+		this.maxBattleMomentum = m;
+	}
+	
+	protected void setMomentumRegen(int r){
+		this.battleMomentumRegen = r;
+	}
+	
 }
