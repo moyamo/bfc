@@ -74,6 +74,8 @@ Mode of operation
  * Inspired by http://www.arco.in-berlin.de/keyevent.html
  *
  * @author Endre Stølsvik
+ * 
+ * http://tech.stolsvik.com/2010/05/linux-java-repeats-released-keyevents.html
  */
 public class RepeatingReleasedEventsFixer implements AWTEventListener {
 

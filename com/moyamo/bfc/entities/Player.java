@@ -1,8 +1,5 @@
 package com.moyamo.bfc.entities;
 
-import java.util.LinkedList;
-import java.util.Queue;
-
 import com.moyamo.bfc.Constants;
 import com.moyamo.bfc.events.AttackEvent;
 import com.moyamo.bfc.events.InputEvent;
@@ -20,7 +17,6 @@ public abstract class Player extends Entity implements InputHandle, IMovable{
 	private int speed;
 	private int basicAttackDamage;
 	private int reach;	
-	private static final int ATTACK_DELAY = 100;
 	private long timeSinceAttack = System.currentTimeMillis();
 	private int jumpspeed;
 	private double battleMomentum;
@@ -28,7 +24,7 @@ public abstract class Player extends Entity implements InputHandle, IMovable{
 	private double battleMomentumRegen;
 	
 	Player(int x, int y, int width, int height, int basicAttackDamage,
-			byte direction, int health, int reach) {
+			int direction, int health, int reach) {
 		super(x, y, width, height, direction);
 		setHealth(health);
 		this.reach             = reach;
@@ -67,6 +63,7 @@ public abstract class Player extends Entity implements InputHandle, IMovable{
 			setYSpeed((int)(getYSpeed() + Constants.GRAVITY*timeDiff/1000));
 		} else {
 			setYSpeed(0);
+			setY(Constants.GROUND-getHeight()); // Prevents players from going below ground;
 		}
 	}
 	
@@ -80,7 +77,7 @@ public abstract class Player extends Entity implements InputHandle, IMovable{
 	 */
 	protected void attack() {
 		long currTime = System.currentTimeMillis();
-		if (currTime - timeSinceAttack > ATTACK_DELAY){
+		if (currTime - timeSinceAttack > getAttackDelay()){
 			setMoving(false);
 			setAttacking();
 			if (getDirection() == 1){
@@ -212,5 +209,5 @@ public abstract class Player extends Entity implements InputHandle, IMovable{
 	protected void setMomentumRegen(int r){
 		this.battleMomentumRegen = r;
 	}
-	
+	abstract protected int getAttackDelay();
 }

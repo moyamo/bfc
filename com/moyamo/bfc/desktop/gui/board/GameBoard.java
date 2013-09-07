@@ -14,6 +14,7 @@ import javax.swing.JComponent;
 import com.moyamo.bfc.Constants;
 import com.moyamo.bfc.GameHolder;
 import com.moyamo.bfc.desktop.gui.sprites.BGSprite;
+import com.moyamo.bfc.desktop.gui.sprites.BruceSprite;
 import com.moyamo.bfc.desktop.gui.sprites.BulletSprite;
 import com.moyamo.bfc.desktop.gui.sprites.ChuckSprite;
 import com.moyamo.bfc.desktop.gui.sprites.IDrawable;
@@ -60,7 +61,7 @@ public class GameBoard extends JComponent implements GameHolder, Constants{
 			e.printStackTrace();
 		}
 		SpriteManager.self().addSprite(new ChuckSprite(0, this));
-		SpriteManager.self().addSprite(new ChuckSprite(1, this));
+		SpriteManager.self().addSprite(new BruceSprite(1, this));
 		SpriteManager.self().addSprite(new PlayerStatBar(0));
 		SpriteManager.self().addSprite(new PlayerStatBar(1));
 
