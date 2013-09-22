@@ -11,7 +11,7 @@ import com.moyamo.bfc.events.AttackEvent;
  */
 public class AttackHandler {
 	
-	public void processAttack(AttackEvent e) {
-		EntityStore.self().getCombatant(e.getDefenderID()).applyAttack(e);
+	public boolean processAttack(AttackEvent e) {
+		return EntityStore.self().getCombatant(e.getDefenderID()).applyAttack(e);
 	}
 } 

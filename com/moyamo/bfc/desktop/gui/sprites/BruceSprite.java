@@ -17,13 +17,15 @@ public class BruceSprite implements IDrawable{
 	private int entityID;
 	private static final int ANIM_DELAY = 75;
 	private int animCount = ANIM_DELAY;
-	private boolean attacking;
+	private boolean attacking, flykicking;
 	private ImageObserver observer;
 	private ImageIcon leeImage = new ImageIcon(this.getClass().getResource("/com/moyamo/bfc/res/images/Bruce_Lee/BruceLee.png"));
 	private ImageIcon leePunchImage = new ImageIcon(this.getClass().getResource("/com/moyamo/bfc/res/images/Bruce_Lee/BruceLeePunch.png"));
+	private ImageIcon leeFlyKickImage = new ImageIcon(this.getClass().getResource("/com/moyamo/bfc/res/images/Bruce_Lee/BruceLeeFlyKick.png"));
 	private ImageIcon lastImage = leeImage;
 	private ImageIcon rightLeeImage;
 	private ImageIcon rightLeePunchImage;
+	private ImageIcon rightLeeFlyKickImage;
 	private int x, y, width, height, xBounds, yBounds;
 	
 	public BruceSprite(int entityID, ImageObserver observer){
@@ -48,6 +50,15 @@ public class BruceSprite implements IDrawable{
 					lastImage = rightLeePunchImage;
 				}
 				attacking = false;
+			}else if (flykicking){
+				if (lee.getDirection() == -1){
+					lastImage = leeFlyKickImage;
+				}else{
+					lastImage = rightLeeFlyKickImage;
+				}
+				if (lee.onGround()){
+					flykicking = false;
+				}
 			}else{
 				if (lee.getDirection() == -1){
 					lastImage = leeImage;
@@ -94,12 +105,23 @@ public class BruceSprite implements IDrawable{
 		tx.translate(-bI.getWidth(), 0);
 		op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
 		rightLeePunchImage = new ImageIcon(op.filter(bI, null));
+		
+		tx = AffineTransform.getScaleInstance(-1.0, 1.0);
+		bI = new BufferedImage(leeFlyKickImage.getIconWidth(), leeFlyKickImage.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
+		gc = bI.createGraphics();
+		gc.drawImage(leeFlyKickImage.getImage(), 0, 0 , null);
+		gc.dispose();
+		tx.translate(-bI.getWidth(), 0);
+		op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+		rightLeeFlyKickImage = new ImageIcon(op.filter(bI, null));
 	}
 	
 	private void setDrawFlags(BruceLee lee){
 		for(String e = lee.nextDrawEvent(); e != null; e = lee.nextDrawEvent()){
 			if (e.equals("attack")){
 				attacking = true;
+			}else if (e.equals("flykick")){
+				flykicking = true;
 			}
 		}
 	}		

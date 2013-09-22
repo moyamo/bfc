@@ -117,7 +117,9 @@ public class GameEngine implements Runnable{
 	private void processEvent(int entityID, Object e) {
 		if (e instanceof AttackEvent){
 			((AttackEvent) e).setDefenderID(entityID ^ 0x1);
-			aHandler.processAttack((AttackEvent)e);
+			if (aHandler.processAttack((AttackEvent)e)){
+				store.getCombatant(entityID).onHit((AttackEvent)e);
+			}
 		} else if (e instanceof PlayerDeathEvent){
 			playerDeath(store.getCombatant(entityID));
 		} else if (e instanceof ProjectileEvent){

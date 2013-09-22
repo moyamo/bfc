@@ -106,7 +106,7 @@ public abstract class Player extends Entity implements InputHandle, IMovable{
 		}
 	}
 	
-	private boolean onGround(){
+	public boolean onGround(){
 		return getY()+getHeight() >= Constants.GROUND;
 	}
 	
@@ -210,4 +210,5 @@ public abstract class Player extends Entity implements InputHandle, IMovable{
 		this.battleMomentumRegen = r;
 	}
 	abstract protected int getAttackDelay();
+	public void onHit(AttackEvent e){}
 }
