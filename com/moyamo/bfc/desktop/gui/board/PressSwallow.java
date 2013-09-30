@@ -2,8 +2,6 @@ package com.moyamo.bfc.desktop.gui.board;
 
 import java.awt.event.KeyEvent;
 
-import com.moyamo.bfc.events.InputEvent;
-
 /**
  * This class swallow the repeated key presses and then passes it to the 
  * 

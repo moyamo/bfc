@@ -11,7 +11,6 @@ import javax.swing.ImageIcon;
 
 import com.moyamo.bfc.entities.BruceLee;
 import com.moyamo.bfc.logic.EntityStore;
-import com.moyamo.bfc.utils.BasicPNG;
 
 public class BruceSprite implements IDrawable{
 	private int entityID;

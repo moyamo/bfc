@@ -1,7 +1,6 @@
 package com.moyamo.bfc.desktop.gui.sprites;
 
 import java.awt.Graphics;
-import java.awt.image.ImageObserver;
 
 
 public interface IDrawable{

@@ -2,7 +2,6 @@ package com.moyamo.bfc.desktop.gui.sprites;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.image.ImageObserver;
 
 import com.moyamo.bfc.entities.Player;
 import com.moyamo.bfc.logic.EntityStore;

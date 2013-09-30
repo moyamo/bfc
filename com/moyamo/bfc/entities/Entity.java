@@ -1,10 +1,8 @@
 package com.moyamo.bfc.entities;
 
-import java.net.URI;
+import java.awt.geom.Point2D;
 import java.util.LinkedList;
 import java.util.Queue;
-
-import com.moyamo.bfc.logic.GameEngine;
 
 /**
  * An Entity is an object in the game. It is a sprite without a picture. The 
@@ -18,18 +16,16 @@ import com.moyamo.bfc.logic.GameEngine;
 public class Entity {
 	private Queue<Object> events;
 	private Queue<String> drawEvents;
-	private int x;
-	private int y;
-	private int xSpeed;
-	private int ySpeed;
+	private Point2D position;
+	private Point2D speed;
 	private int width;
 	private int height;
 	private int direction;
 	private boolean moving;
 
-	public Entity (int x, int y, int width, int height, int direction) {
-		this.x         = x;
-		this.y         = y;
+	public Entity (double x, double y, int width, int height, int direction) {
+		position = new Point2D.Double(x, y);
+		speed = new Point2D.Double();
 		this.height    = height;
 		this.width     = width;
 		this.direction = direction;
@@ -38,11 +34,11 @@ public class Entity {
 	}
 	
 	public int getX(){
-		return x;
+		return (int) position.getX();
 	}
 	
 	public int getY(){
-		return y;
+		return (int) position.getY();
 	}
 	
 	public int getWidth() {
@@ -53,14 +49,22 @@ public class Entity {
 		return height;
 	}
 	
-	public void setX(int x){
-		this.x = x;
+	protected void setX(double x){
+		this.position.setLocation(x, position.getY());
 	}
 	
-	public void setY(int y) {
-		this.y = y;
+	protected void setY(double y) {
+		this.position.setLocation(position.getX(), y);
 	}
 	
+	protected void incX(double x){
+		this.position.setLocation(position.getX() + x, position.getY());
+	}
+	
+	protected void incY(double y){
+		this.position.setLocation(position.getX(), position.getY() + y);
+	
+	}
 	public int getDirection() {
 		return direction;
 	}
@@ -84,19 +88,19 @@ public class Entity {
 	protected void setMoving(boolean moving) {
 		this.moving = moving;
 	}
-	protected void setXSpeed(int x){
-		this.xSpeed = x;
+	protected void setXSpeed(double x){
+		this.speed.setLocation(x, speed.getY());
 	}
-	protected void setYSpeed(int y){
-		this.ySpeed = y;
-	}
-	
-	protected int getXSpeed(){
-		return xSpeed;
+	protected void setYSpeed(double y){
+		this.speed.setLocation(speed.getX(), y);
 	}
 	
-	protected int getYSpeed(){
-		return ySpeed;
+	protected double getXSpeed(){
+		return speed.getX();
+	}
+	
+	protected double getYSpeed(){
+		return speed.getY();
 	}
 	protected void addEvent(Object e){
 		events.add(e);

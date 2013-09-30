@@ -18,7 +18,7 @@ public abstract class Player extends Entity implements InputHandle, IMovable{
 	private int basicAttackDamage;
 	private int reach;	
 	private long timeSinceAttack = System.currentTimeMillis();
-	private int jumpspeed;
+	private double jumpspeed;
 	private double battleMomentum;
 	private double maxBattleMomentum;
 	private double battleMomentumRegen;
@@ -38,7 +38,7 @@ public abstract class Player extends Entity implements InputHandle, IMovable{
 	 * @param timeDiff - time passed since move was called in milliseconds
 	 */
 	public void move(long timeDiff){
-		int offSet = 0;
+		double offSet = 0;
 		if (isMoving()){
 			offSet += getSpeed() * getDirection() * timeDiff / 1000;
 		}
@@ -55,12 +55,12 @@ public abstract class Player extends Entity implements InputHandle, IMovable{
 				setXSpeed(0);
 			}
 		}
-		setX(getX() + (int)offSet);
-		int yOffSet = 0;
+		incX(offSet);
+		double yOffSet = 0;
 		yOffSet = getYSpeed();
-		setY(getY() + yOffSet);
+		incY(yOffSet);
 		if (!onGround()) {
-			setYSpeed((int)(getYSpeed() + Constants.GRAVITY*timeDiff/1000));
+			setYSpeed(getYSpeed() + Constants.GRAVITY*timeDiff/1000);
 		} else {
 			setYSpeed(0);
 			setY(Constants.GROUND-getHeight()); // Prevents players from going below ground;
@@ -181,11 +181,11 @@ public abstract class Player extends Entity implements InputHandle, IMovable{
 
 	protected abstract int getBasicYContact();
 
-	protected int getJumpspeed() {
+	protected double getJumpspeed() {
 		return jumpspeed;
 	}
 
-	protected void setJumpspeed(int jumpspeed) {
+	protected void setJumpspeed(double jumpspeed) {
 		this.jumpspeed = jumpspeed;
 	}
 	
