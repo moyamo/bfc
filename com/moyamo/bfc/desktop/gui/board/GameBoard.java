@@ -69,8 +69,7 @@ public class GameBoard extends JComponent implements GameHolder, Constants{
 	}
 
 	/**
-	 * Iterates over entities and turns them into sprites. It then draws the
-	 * sprites.
+	 * Draws sprites.
 	 * 
 	 * @param g - Graphics
 	 * @throws MalformedURLException 

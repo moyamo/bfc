@@ -30,7 +30,7 @@ public class GameEngine implements Runnable{
 	private AttackHandler aHandler; 
 	private EntityStore store = EntityStore.self();
 	private EventProcessor evProc = EventProcessor.self();
-	private CollisionDetector colDectect = new CollisionDetector();
+	private CollisionDetector colDetect = new CollisionDetector();
 	/**
 	 * Creates and instance of the GameEngine. It requires a {@link com.moyamo.bfc.GameHolder GameHolder} to draw images.
 	 * 
@@ -92,7 +92,7 @@ public class GameEngine implements Runnable{
 					processEvent(i, pEvent);
 				}
 			}
-			colDectect.checkCollisions();
+			colDetect.checkCollisions();
 			parent.notifyDraw();
 			try {
 				Thread.sleep(20);
@@ -127,7 +127,7 @@ public class GameEngine implements Runnable{
 			if(p.type == projType.BULLET){
 				int id = store.addEntity(new Bullet(p.origX, p.origY, p.speedX, p.speedY));
 				parent.addSprite(id);
-				colDectect.addBullet(id);
+				colDetect.addBullet(id);
 			}
 		} else if (e instanceof DestroyedEvent) {
 			store.delEntity(entityID);

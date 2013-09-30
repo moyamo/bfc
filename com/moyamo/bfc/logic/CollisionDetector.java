@@ -3,6 +3,7 @@ package com.moyamo.bfc.logic;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.moyamo.bfc.Constants;
 import com.moyamo.bfc.debug.Out;
 import com.moyamo.bfc.entities.Bullet;
 import com.moyamo.bfc.entities.Player;
@@ -17,6 +18,10 @@ public class CollisionDetector {
 		for (int I = 0; I < bullets.size(); I++){
 			Integer i = bullets.get(I);
 			Bullet b = (Bullet) EntityStore.self().getEntity(i.intValue());
+			if (b.getY() > Constants.GROUND){
+				delBullet(i);
+				b.destroy();
+			}
 			for(Player p: players){
 				boolean hit = p.applyAttack(new AttackEvent(b.getDamage(), b.getX(), b.getY(), b.getDirection()));
 				if (hit){
