@@ -7,8 +7,8 @@ import com.moyamo.bfc.events.InputEvent;
 import com.moyamo.bfc.events.InputHandle;
 
 /**
- * Converts key events to Input Events and then passes it to the {@link
- * com.moyamo.bfc.logic.GameEngine GameEngine}
+ * Converts key events to Input Events and then passes it to an {@link
+ * com.moyamo.bfc.logic.InputHandle InputHandle}
  * 
  * @author Mohammed Yaseen Mowzer
  * @version 0.0.1
