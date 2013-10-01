@@ -8,8 +8,10 @@ import java.net.URISyntaxException;
 
 import javax.swing.ImageIcon;
 
+import com.moyamo.bfc.debug.ExceptionDialog;
 import com.moyamo.bfc.entities.Player;
 import com.moyamo.bfc.logic.EntityStore;
+import com.moyamo.bfc.res.ImageStore;
 import com.moyamo.bfc.utils.BasicPNG;
 
 public class ChuckSprite implements IDrawable{
@@ -31,16 +33,10 @@ public class ChuckSprite implements IDrawable{
 	public ChuckSprite(int entityID, ImageObserver observer){
 		this.entityID = entityID;
 		this.observer = observer;
-		try {
-			initImages();
-			BasicPNG png = new BasicPNG(chuckImages[0]);
-			xBounds = png.getWidth();
-			yBounds = png.getHeight();
-		} catch (URISyntaxException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+		chuckImages = ImageStore.getChuckImage();
+		BasicPNG png = new BasicPNG(chuckImages[0]);
+		xBounds = png.getWidth();
+		yBounds = png.getHeight();
 	}
 	@Override
 	public void draw(Graphics g, long timeDiff) {
@@ -48,50 +44,8 @@ public class ChuckSprite implements IDrawable{
 			setDrawFlags();
 			doAnim(g,timeDiff,observer);
 		} catch (URISyntaxException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			new ExceptionDialog(e);
 		}
-	}
-	
-	private void initImages() throws URISyntaxException {
-		URI chuckLeft   = this.getClass().getResource(
-                          "/com/moyamo/bfc/res/images/Chuck_Norris/chuckLeft.png").toURI();
-		URI chuckLeft1  = this.getClass().getResource(
-                          "/com/moyamo/bfc/res/images/Chuck_Norris/chuckLeft1.png").toURI();
-		URI chuckLeft2  = this.getClass().getResource(
-		                  "/com/moyamo/bfc/res/images/Chuck_Norris/chuckLeft2.png").toURI();
-		URI chuckRight  = this.getClass().getResource(
-		                  "/com/moyamo/bfc/res/images/Chuck_Norris/chuckRight.png").toURI();
-		URI chuckRight1 = this.getClass().getResource(
-				          "/com/moyamo/bfc/res/images/Chuck_Norris/chuckRight1.png").toURI();
-		URI chuckRight2 = this.getClass().getResource(
-		                  "/com/moyamo/bfc/res/images/Chuck_Norris/chuckRight2.png").toURI();
-		URI chuckLeftP1 = this.getClass().getResource(
-		                  "/com/moyamo/bfc/res/images/Chuck_Norris/chuckLeftP1.png").toURI();
-		URI chuckRightP1 = this.getClass().getResource(
-		                 "/com/moyamo/bfc/res/images/Chuck_Norris/chuckRightP1.png").toURI();
-		URI chuckLeftP2 = this.getClass().getResource(
-		                  "/com/moyamo/bfc/res/images/Chuck_Norris/chuckLeftP2.png").toURI();
-		URI chuckRightP2 = this.getClass().getResource(
-		                 "/com/moyamo/bfc/res/images/Chuck_Norris/chuckRightP2.png").toURI();
-		URI chuckRightGun = this.getClass().getResource(
-                "/com/moyamo/bfc/res/images/Chuck_Norris/chuckRightGun.png").toURI();
-		URI chuckLeftGun = this.getClass().getResource(
-                "/com/moyamo/bfc/res/images/Chuck_Norris/chuckLeftGun.png").toURI();
-		
-		chuckImages = new URI [12];
-		chuckImages[0] = chuckLeft;
-		chuckImages[1] = chuckRight;
-		chuckImages[2] = chuckLeft1;
-		chuckImages[3] = chuckRight1;
-		chuckImages[4] = chuckLeft2;
-		chuckImages[5] = chuckRight2;
-		chuckImages[6] = chuckLeftP1;
-		chuckImages[7] = chuckRightP1;
-		chuckImages[8] = chuckLeftP2;
-		chuckImages[9] = chuckRightP2;
-		chuckImages[10] = chuckLeftGun;
-		chuckImages[11] = chuckRightGun;
 	}
 	
 	/**

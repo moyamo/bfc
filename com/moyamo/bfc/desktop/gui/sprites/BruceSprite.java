@@ -1,16 +1,13 @@
 package com.moyamo.bfc.desktop.gui.sprites;
 
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
-import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 
 import javax.swing.ImageIcon;
 
 import com.moyamo.bfc.entities.BruceLee;
 import com.moyamo.bfc.logic.EntityStore;
+import com.moyamo.bfc.res.ImageStore;
 
 public class BruceSprite implements IDrawable{
 	private int entityID;
@@ -18,10 +15,10 @@ public class BruceSprite implements IDrawable{
 	private int animCount = ANIM_DELAY;
 	private boolean attacking, flykicking;
 	private ImageObserver observer;
-	private ImageIcon leeImage = new ImageIcon(this.getClass().getResource("/com/moyamo/bfc/res/images/Bruce_Lee/BruceLee.png"));
-	private ImageIcon leePunchImage = new ImageIcon(this.getClass().getResource("/com/moyamo/bfc/res/images/Bruce_Lee/BruceLeePunch.png"));
-	private ImageIcon leeFlyKickImage = new ImageIcon(this.getClass().getResource("/com/moyamo/bfc/res/images/Bruce_Lee/BruceLeeFlyKick.png"));
-	private ImageIcon lastImage = leeImage;
+	private ImageIcon leeImage;
+	private ImageIcon leePunchImage;
+	private ImageIcon leeFlyKickImage;
+	private ImageIcon lastImage;
 	private ImageIcon rightLeeImage;
 	private ImageIcon rightLeePunchImage;
 	private ImageIcon rightLeeFlyKickImage;
@@ -30,7 +27,14 @@ public class BruceSprite implements IDrawable{
 	public BruceSprite(int entityID, ImageObserver observer){
 		this.entityID = entityID;
 		this.observer = observer;
-		makeRotatedImages();
+		ImageIcon limage[] = ImageStore.getBruceImages();
+		leeImage = limage[0];
+		leePunchImage = limage[1];
+		leeFlyKickImage = limage[2];
+		rightLeeImage = limage[3];
+		rightLeePunchImage = limage[4];
+		rightLeeFlyKickImage = limage[5];
+		lastImage = leeImage;
 		xBounds = leeImage.getIconWidth();
 		yBounds = leeImage.getIconHeight();
 	}
@@ -84,35 +88,6 @@ public class BruceSprite implements IDrawable{
 	@Override
 	public boolean destroyed() {
 		return false;
-	}
-	
-	private void makeRotatedImages(){
-		AffineTransform tx = AffineTransform.getScaleInstance(-1.0, 1.0);
-		BufferedImage bI = new BufferedImage(leeImage.getIconWidth(), leeImage.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
-		Graphics2D gc = bI.createGraphics();
-		gc.drawImage(leeImage.getImage(), 0, 0 , null);
-		gc.dispose();
-		tx.translate(-bI.getWidth(), 0);
-		AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-		rightLeeImage = new ImageIcon(op.filter(bI, null));
-		
-		tx = AffineTransform.getScaleInstance(-1.0, 1.0);
-		bI = new BufferedImage(leePunchImage.getIconWidth(), leePunchImage.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
-		gc = bI.createGraphics();
-		gc.drawImage(leePunchImage.getImage(), 0, 0 , null);
-		gc.dispose();
-		tx.translate(-bI.getWidth(), 0);
-		op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-		rightLeePunchImage = new ImageIcon(op.filter(bI, null));
-		
-		tx = AffineTransform.getScaleInstance(-1.0, 1.0);
-		bI = new BufferedImage(leeFlyKickImage.getIconWidth(), leeFlyKickImage.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
-		gc = bI.createGraphics();
-		gc.drawImage(leeFlyKickImage.getImage(), 0, 0 , null);
-		gc.dispose();
-		tx.translate(-bI.getWidth(), 0);
-		op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-		rightLeeFlyKickImage = new ImageIcon(op.filter(bI, null));
 	}
 	
 	private void setDrawFlags(BruceLee lee){

@@ -1,8 +1,5 @@
 package com.moyamo.bfc.entities;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-
 import com.moyamo.bfc.events.InputEvent;
 import com.moyamo.bfc.events.ProjectileEvent;
 import com.moyamo.bfc.events.ProjectileEvent.projType;
@@ -19,8 +16,7 @@ public class ChuckNorris extends Player{
 	private static final int REACH = 130;
 	private static final int BASIC_ATTACK_DAMAGE = 20;
 	
-	public ChuckNorris(int x, int y, int direction) 
-	       throws URISyntaxException, IOException {
+	public ChuckNorris(int x, int y, int direction) {
 		super(x, y, 140 , 260, BASIC_ATTACK_DAMAGE, direction, START_HEALTH,
 				REACH);
 		setSpeed(300);

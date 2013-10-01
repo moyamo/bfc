@@ -8,6 +8,8 @@ import java.net.URI;
 
 import javax.swing.ImageIcon;
 
+import com.moyamo.bfc.debug.ExceptionDialog;
+
 public class BGSprite implements IDrawable{
 	Image image;
 	ImageObserver observer;
@@ -16,8 +18,7 @@ public class BGSprite implements IDrawable{
 		try {
 			this.image = new ImageIcon(image.toURL()).getImage();
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			new ExceptionDialog(e);
 		}
 	}
 	

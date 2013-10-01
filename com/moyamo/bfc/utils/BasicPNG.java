@@ -5,7 +5,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
+
+import com.moyamo.bfc.debug.ExceptionDialog;
 
 /**
  * An untested (and hopefully) platform independent way of representing PNG 
@@ -18,22 +19,34 @@ import java.net.URISyntaxException;
 public class BasicPNG {
 	byte [] image;
 	
-	public BasicPNG(URI imageURI) throws URISyntaxException, IOException {
-		image = readImage(imageURI);
+	public BasicPNG(URI imageURI) {
+			image = readImage(imageURI);
 	}
 	
-	private byte[] readImage(URI imageURI) throws URISyntaxException,
-	                                              IOException{
-		File imageFile = new File(imageURI);
-		FileInputStream fileInput = new FileInputStream(imageFile);
-		BufferedInputStream bInput = new BufferedInputStream(fileInput);
-		byte [] image = new byte[(int)imageFile.length()];
-		bInput.read(image);
-		bInput.close();
-		fileInput.close();
+	private byte[] readImage(URI imageURI) {
+		File imageFile = null;
+		FileInputStream fileInput = null;
+		BufferedInputStream bInput = null;
+		byte [] image = null;
+		try {
+			imageFile = new File(imageURI);
+			fileInput = new FileInputStream(imageFile);
+			bInput = new BufferedInputStream(fileInput);
+			image = new byte[(int)imageFile.length()];
+			bInput.read(image);
+		} catch (IOException e){
+			new ExceptionDialog(e);
+		} finally {
+			try {
+				bInput.close();
+				fileInput.close();
+			} catch (IOException e) {
+				new ExceptionDialog(e);
+			}
+		}
 		return image;
 	}
-	
+	  
 	/**
 	 * Returns the width of the PNG image.
 	 * 

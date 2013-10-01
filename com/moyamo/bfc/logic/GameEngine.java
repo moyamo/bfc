@@ -1,8 +1,5 @@
 package com.moyamo.bfc.logic;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-
 import com.moyamo.bfc.GameHolder;
 import com.moyamo.bfc.entities.BruceLee;
 import com.moyamo.bfc.entities.Bullet;
@@ -52,16 +49,8 @@ public class GameEngine implements Runnable{
 	}
 	
 	public void run() {		
-		try {
-			store.addCombatant(new ChuckNorris(50, 300, 1));
-			store.addCombatant(new BruceLee(450, 300, -1));
-		} catch (URISyntaxException e1) {
-			// TODO Pipe to Handler
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			// TODO Pipe to Handler
-			e1.printStackTrace();
-		}
+		store.addCombatant(new ChuckNorris(50, 300, 1));
+		store.addCombatant(new BruceLee(450, 300, -1));
 		long lastLoopTime = System.currentTimeMillis();
 		parent.notifyDraw();
 

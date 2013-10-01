@@ -25,6 +25,7 @@ import com.moyamo.bfc.logic.EntityStore;
 import com.moyamo.bfc.logic.EventProcessor;
 import com.moyamo.bfc.logic.GameEngine;
 import com.moyamo.bfc.logic.SpriteManager;
+import com.moyamo.bfc.res.ImageStore;
 
 /**
  * This is the component that runs the game.
@@ -54,12 +55,7 @@ public class GameBoard extends JComponent implements GameHolder, Constants{
 		requestFocus();
 		engine.start();
 		timeSince = System.currentTimeMillis();
-		try {
-			SpriteManager.self().addSprite(new BGSprite(this.getClass().getResource("/com/moyamo/bfc/res/images/Back/desert.png").toURI(), this));
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		SpriteManager.self().addSprite(new BGSprite(ImageStore.getBGURI(), this));
 		SpriteManager.self().addSprite(new ChuckSprite(0, this));
 		SpriteManager.self().addSprite(new BruceSprite(1, this));
 		SpriteManager.self().addSprite(new PlayerStatBar(0));
@@ -75,7 +71,7 @@ public class GameBoard extends JComponent implements GameHolder, Constants{
 	 * @throws MalformedURLException 
 	 * @throws URISyntaxException 
 	 */
-	private void drawSprites(Graphics g) throws MalformedURLException, URISyntaxException{
+	private void drawSprites(Graphics g){
 		List <IDrawable>entities = SpriteManager.self().getSprites();
 		Iterator<IDrawable> iterator = entities.iterator();
 		IDrawable entity;
@@ -90,12 +86,7 @@ public class GameBoard extends JComponent implements GameHolder, Constants{
 	@Override
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
-		try {
 			drawSprites(g);
-		} catch (MalformedURLException | URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		if (!engine.isGameRunning()){
 			g.setColor(Color.BLACK);
 			g.drawString("GAME OVER", 390, 290);
