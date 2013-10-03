@@ -1,11 +1,13 @@
 package com.moyamo.bfc.logic;
 
+import java.awt.Dialog.ModalityType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.LinkedList;
 import java.util.Queue;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
@@ -21,7 +23,35 @@ public class EventProcessor implements InputHandle{
 	private EntityStore store = EntityStore.self();
 	private String address;
 	
-	private EventProcessor (){}
+	private EventProcessor (){
+		if (address == null) {
+			JDialog addressFrame = new JDialog();
+			addressFrame.setModalityType(ModalityType.APPLICATION_MODAL);
+			JPanel panel = new JPanel();
+			JTextArea addressText = new JTextArea();
+			JButton accept = new JButton("Accept");
+			addressFrame.add(panel);
+			panel.add(addressText);
+			panel.add(accept);
+			addressFrame.setResizable(false);
+			addressFrame.pack();
+			class Listener implements ActionListener {
+				JDialog addressFrame;
+				JTextArea addressText;
+				Listener(JDialog frame, JTextArea textField) {
+					this.addressFrame = frame;
+					this.addressText = textField;
+				}
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					address = addressText.getText();
+					addressFrame.dispose();
+				}
+			}
+			accept.addActionListener(new Listener(addressFrame, addressText));
+			addressFrame.setVisible(true);
+		}
+	}
 	
 	public static EventProcessor self(){
 		if (instance == null) {
@@ -37,10 +67,12 @@ public class EventProcessor implements InputHandle{
 	@Override
 	public synchronized void pressEvent (InputEvent e) {
 		inputQueue.add(e);
+		sendPacket(e);
 	}
 	@Override
 	public synchronized void releaseEvent (InputEvent e) {
 		inputQueue.add(e);
+		sendPacket(e);
 	}
 	
 	/**
@@ -48,36 +80,9 @@ public class EventProcessor implements InputHandle{
 	 */
 	void processEvents(){
 		InputEvent e;
-		if (address == null) {
-			JFrame addressFrame = new JFrame();
-			JPanel panel = new JPanel();
-			JTextArea addressText = new JTextArea();
-			JButton accept = new JButton("Accept");
-			addressFrame.add(panel);
-			panel.add(addressText);
-			panel.add(accept);
-			addressFrame.setResizable(false);
-			addressFrame.pack();
-			class Listener implements ActionListener {
-				JFrame addressFrame;
-				JTextArea addressText;
-				Listener(JFrame frame, JTextArea textField) {
-					this.addressFrame = frame;
-					this.addressText = textField;
-				}
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					address = addressText.getText();
-					addressFrame.dispose();
-				}
-			}
-			accept.addActionListener(new Listener(addressFrame, addressText));
-			addressFrame.setVisible(true);
-			while (address == null) System.out.println(address);
-		}
+		
 		while(!inputQueue.isEmpty()){
 			e = inputQueue.remove();
-			NetworkTesting.sendPacket(e, address);
 			if (e.isPress()) {
 				if (e.getFocus() == InputEvent.PLAYER1){
 					store.getCombatant(0).pressEvent(e);
@@ -95,4 +100,7 @@ public class EventProcessor implements InputHandle{
 		inputQueue.clear();
 	}
 	
+	private void sendPacket(InputEvent e){
+		NetworkTesting.sendPacket(e, address);
+	}
 }
