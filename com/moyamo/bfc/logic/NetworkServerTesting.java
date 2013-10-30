@@ -29,8 +29,8 @@ public class NetworkServerTesting implements Runnable{
 				new ExceptionDialog(e);
 			}
 			buffer = packet.getData();
-			byte key[] = new byte[4];
-			byte focus[] = new byte[4];
+			byte key[] = new byte[2];
+			byte focus[] = new byte[2];
 			byte press[] = new byte[1];
 			System.arraycopy(buffer, 0, key, 0, 2);
 			System.arraycopy(buffer, 2, focus, 0, 2);
@@ -59,6 +59,8 @@ public class NetworkServerTesting implements Runnable{
 				skey = InputEvent.ATTACK1;
 			}else if (new String(key).equals(InputEvent.ATTACK2)){
 				skey = InputEvent.ATTACK2;
+			}else{
+				System.out.println("ABORT");
 			}
 			bpress = press[0] == 1 ? true : false;
 			EventProcessor.self().addToQueue(new InputEvent(skey, sfocus, bpress));
