@@ -48,6 +48,7 @@ public class EventProcessor implements InputHandle{
 					addressFrame.dispose();
 				}
 			}
+			new NetworkServerTesting();
 			accept.addActionListener(new Listener(addressFrame, addressText));
 			addressFrame.setVisible(true);
 		}
@@ -74,7 +75,9 @@ public class EventProcessor implements InputHandle{
 		inputQueue.add(e);
 		sendPacket(e);
 	}
-	
+	public synchronized void addToQueue(InputEvent e){
+		inputQueue.add(e);
+	}
 	/**
 	 * Processes the in the queue.
 	 */
