@@ -1,88 +1,61 @@
 package com.moyamo.bfc.res;
 
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 import javax.swing.ImageIcon;
 
-import com.moyamo.bfc.debug.ExceptionDialog;
-
 public class ImageStore {
 
-	public static URI getBGURI() {
-		try {
-			return ImageStore.class.getResource(
-					"/com/moyamo/bfc/res/images/Back/desert.png").toURI();
-		} catch (URISyntaxException e) {
-			new ExceptionDialog(e);
-			return null;
-		}
+	public static Image getBGImage() {
+		return new ImageIcon(ImageStore.class.getResource(
+				"/com/moyamo/bfc/res/images/Back/desert.png")).getImage();
+		
 	}
 
-	public static URI[] getChuckImage() {
-		try {
-			URI chuckLeft = ImageStore.class.getResource(
-					"/com/moyamo/bfc/res/images/Chuck_Norris/chuckLeft.png")
-					.toURI();
+	public static ImageIcon[] getChuckImageIcons() {
+		ImageIcon chuckLeft = new ImageIcon(ImageStore.class.getResource(
+				"/com/moyamo/bfc/res/images/Chuck_Norris/chuckLeft.png"));
 
-			URI chuckLeft1 = ImageStore.class
-					.getClass()
-					.getResource(
-					"/com/moyamo/bfc/res/images/Chuck_Norris/chuckLeft1.png")
-					.toURI();
-			URI chuckLeft2 = ImageStore.class.getResource(
-					"/com/moyamo/bfc/res/images/Chuck_Norris/chuckLeft2.png")
-					.toURI();
-			URI chuckRight = ImageStore.class.getResource(
-					"/com/moyamo/bfc/res/images/Chuck_Norris/chuckRight.png")
-					.toURI();
-			URI chuckRight1 = ImageStore.class.getResource(
-					"/com/moyamo/bfc/res/images/Chuck_Norris/chuckRight1.png")
-					.toURI();
-			URI chuckRight2 = ImageStore.class.getResource(
-					"/com/moyamo/bfc/res/images/Chuck_Norris/chuckRight2.png")
-					.toURI();
-			URI chuckLeftP1 = ImageStore.class.getResource(
-					"/com/moyamo/bfc/res/images/Chuck_Norris/chuckLeftP1.png")
-					.toURI();
-			URI chuckRightP1 = ImageStore.class.getResource(
-					"/com/moyamo/bfc/res/images/Chuck_Norris/chuckRightP1.png")
-					.toURI();
-			URI chuckLeftP2 = ImageStore.class.getResource(
-					"/com/moyamo/bfc/res/images/Chuck_Norris/chuckLeftP2.png")
-					.toURI();
-			URI chuckRightP2 = ImageStore.class.getResource(
-					"/com/moyamo/bfc/res/images/Chuck_Norris/chuckRightP2.png")
-					.toURI();
-			URI chuckRightGun = ImageStore.class
-					.getResource(
-					"/com/moyamo/bfc/res/images/Chuck_Norris/chuckRightGun.png")
-					.toURI();
-			URI chuckLeftGun = ImageStore.class.getResource(
-					"/com/moyamo/bfc/res/images/Chuck_Norris/chuckLeftGun.png")
-					.toURI();
-			URI chuckImages[] = new URI[12];
-			chuckImages[0] = chuckLeft;
-			chuckImages[1] = chuckRight;
-			chuckImages[2] = chuckLeft1;
-			chuckImages[3] = chuckRight1;
-			chuckImages[4] = chuckLeft2;
-			chuckImages[5] = chuckRight2;
-			chuckImages[6] = chuckLeftP1;
-			chuckImages[7] = chuckRightP1;
-			chuckImages[8] = chuckLeftP2;
-			chuckImages[9] = chuckRightP2;
-			chuckImages[10] = chuckLeftGun;
-			chuckImages[11] = chuckRightGun;
-			return chuckImages;
-		} catch (URISyntaxException e) {
-			new ExceptionDialog(e);
-			return null;
-		}
+		ImageIcon chuckLeft1 = new ImageIcon(ImageStore.class.getResource(
+				"/com/moyamo/bfc/res/images/Chuck_Norris/chuckLeft1.png"));
+		ImageIcon chuckLeft2 = new ImageIcon(ImageStore.class.getResource(
+				"/com/moyamo/bfc/res/images/Chuck_Norris/chuckLeft2.png"));
+		ImageIcon chuckRight = new ImageIcon(ImageStore.class.getResource(
+				"/com/moyamo/bfc/res/images/Chuck_Norris/chuckRight.png"));
+		ImageIcon chuckRight1 = new ImageIcon(ImageStore.class.getResource(
+				"/com/moyamo/bfc/res/images/Chuck_Norris/chuckRight1.png"));
+		ImageIcon chuckRight2 = new ImageIcon(ImageStore.class.getResource(
+				"/com/moyamo/bfc/res/images/Chuck_Norris/chuckRight2.png"));
+		ImageIcon chuckLeftP1 = new ImageIcon(ImageStore.class.getResource(
+				"/com/moyamo/bfc/res/images/Chuck_Norris/chuckLeftP1.png"));
+		ImageIcon chuckRightP1 = new ImageIcon(ImageStore.class.getResource(
+				"/com/moyamo/bfc/res/images/Chuck_Norris/chuckRightP1.png"));
+		ImageIcon chuckLeftP2 = new ImageIcon(ImageStore.class.getResource(
+				"/com/moyamo/bfc/res/images/Chuck_Norris/chuckLeftP2.png"));
+		ImageIcon chuckRightP2 = new ImageIcon(ImageStore.class.getResource(
+				"/com/moyamo/bfc/res/images/Chuck_Norris/chuckRightP2.png"));
+		ImageIcon chuckRightGun = new ImageIcon(ImageStore.class.getResource(
+				"/com/moyamo/bfc/res/images/Chuck_Norris/chuckRightGun.png"));
+		ImageIcon chuckLeftGun = new ImageIcon(ImageStore.class.getResource(
+				"/com/moyamo/bfc/res/images/Chuck_Norris/chuckLeftGun.png"));
+		ImageIcon chuckImages[] = new ImageIcon[12];
+		chuckImages[0] = chuckLeft;
+		chuckImages[1] = chuckRight;
+		chuckImages[2] = chuckLeft1;
+		chuckImages[3] = chuckRight1;
+		chuckImages[4] = chuckLeft2;
+		chuckImages[5] = chuckRight2;
+		chuckImages[6] = chuckLeftP1;
+		chuckImages[7] = chuckRightP1;
+		chuckImages[8] = chuckLeftP2;
+		chuckImages[9] = chuckRightP2;
+		chuckImages[10] = chuckLeftGun;
+		chuckImages[11] = chuckRightGun;
+		return chuckImages;
 	}
 	
 	public static ImageIcon[] getBruceImages(){

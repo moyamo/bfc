@@ -3,9 +3,6 @@ package com.moyamo.bfc.desktop.gui.sprites;
 import java.awt.Graphics;
 import java.awt.image.ImageObserver;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 import javax.swing.ImageIcon;
 
@@ -19,7 +16,7 @@ public class ChuckSprite implements IDrawable{
 	private int x;
 	private int y;
 	private final int ANIM_DELAY = 170;
-	private URI chuckImages[];
+	private ImageIcon chuckImages[];
 	private long animCount= ANIM_DELAY;
 	private int animStep = 1;
 	private int imageIndex = 0;
@@ -33,22 +30,14 @@ public class ChuckSprite implements IDrawable{
 	public ChuckSprite(int entityID, ImageObserver observer){
 		this.entityID = entityID;
 		this.observer = observer;
-		chuckImages = ImageStore.getChuckImage();
-		try {
-			xBounds = new ImageIcon(chuckImages[0].toURL()).getIconWidth();
-			yBounds = new ImageIcon(chuckImages[0].toURL()).getIconHeight();
-		} catch (MalformedURLException e) {
-			new ExceptionDialog(e);
-		}
+		chuckImages = ImageStore.getChuckImageIcons();
+		xBounds = chuckImages[0].getIconWidth();
+		yBounds = chuckImages[0].getIconHeight();
 	}
 	@Override
 	public void draw(Graphics g, long timeDiff) {
-		try {
-			setDrawFlags();
-			doAnim(g,timeDiff,observer);
-		} catch (URISyntaxException | IOException e) {
-			new ExceptionDialog(e);
-		}
+		setDrawFlags();
+		doAnim(g,timeDiff,observer);
 	}
 	
 	/**
@@ -60,10 +49,8 @@ public class ChuckSprite implements IDrawable{
 	 * emulate walking.
 	 * 
 	 * @param timeDiff - time in milliseconds since doAnim was called.
-	 * @throws IOException 
-	 * @throws URISyntaxException 
 	 */
-	private void doAnim(Graphics g, double timeDiff, ImageObserver observer) throws URISyntaxException, IOException{
+	private void doAnim(Graphics g, double timeDiff, ImageObserver observer) {
 		Player c = EntityStore.self().getCombatant(entityID);
 		int facing = c.getDirection();
 		boolean moving = c.isMoving();
@@ -87,8 +74,8 @@ public class ChuckSprite implements IDrawable{
 			animCount-=timeDiff;
 		}
 		
-		width = new ImageIcon(chuckImages[imageIndex].toURL()).getIconWidth();
-		height = new ImageIcon(chuckImages[imageIndex].toURL()).getIconHeight();
+		width = chuckImages[imageIndex].getIconWidth();
+		height = chuckImages[imageIndex].getIconHeight();
 
 		if (c.getDirection() == - 1){
 			x = (c.getX() - (width  - xBounds));
@@ -98,7 +85,7 @@ public class ChuckSprite implements IDrawable{
 			y = c.getY();
 		}
 		
-		g.drawImage(new ImageIcon(chuckImages[imageIndex].toURL()).getImage(),x,y,observer);
+		g.drawImage(chuckImages[imageIndex].getImage(),x,y,observer);
 	}
 	
 	private void setDrawFlags(){
