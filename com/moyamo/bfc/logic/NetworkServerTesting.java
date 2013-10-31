@@ -45,6 +45,8 @@ public class NetworkServerTesting implements Runnable{
 				sfocus = InputEvent.PLAYER1;
 			}else if (new String(focus).equals(InputEvent.PLAYER2)){
 				sfocus = InputEvent.PLAYER2;
+			}else{
+				System.out.println("ABORT!");
 			}
 			
 			if (new String(key).equals(InputEvent.DOWN)){
@@ -60,7 +62,7 @@ public class NetworkServerTesting implements Runnable{
 			}else if (new String(key).equals(InputEvent.ATTACK2)){
 				skey = InputEvent.ATTACK2;
 			}else{
-				System.out.println("ABORT");
+				System.out.println("ABORT!");
 			}
 			bpress = press[0] == 1 ? true : false;
 			EventProcessor.self().addToQueue(new InputEvent(skey, sfocus, bpress));
