@@ -3,6 +3,7 @@ package com.moyamo.bfc.desktop.gui.sprites;
 import java.awt.Graphics;
 import java.awt.image.ImageObserver;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -12,7 +13,6 @@ import com.moyamo.bfc.debug.ExceptionDialog;
 import com.moyamo.bfc.entities.Player;
 import com.moyamo.bfc.logic.EntityStore;
 import com.moyamo.bfc.res.ImageStore;
-import com.moyamo.bfc.utils.BasicPNG;
 
 public class ChuckSprite implements IDrawable{
 	private int entityID;
@@ -34,9 +34,12 @@ public class ChuckSprite implements IDrawable{
 		this.entityID = entityID;
 		this.observer = observer;
 		chuckImages = ImageStore.getChuckImage();
-		BasicPNG png = new BasicPNG(chuckImages[0]);
-		xBounds = png.getWidth();
-		yBounds = png.getHeight();
+		try {
+			xBounds = new ImageIcon(chuckImages[0].toURL()).getIconWidth();
+			yBounds = new ImageIcon(chuckImages[0].toURL()).getIconHeight();
+		} catch (MalformedURLException e) {
+			new ExceptionDialog(e);
+		}
 	}
 	@Override
 	public void draw(Graphics g, long timeDiff) {
@@ -83,9 +86,10 @@ public class ChuckSprite implements IDrawable{
 		}else{
 			animCount-=timeDiff;
 		}
-		BasicPNG png = new BasicPNG(chuckImages[imageIndex]);
-		width = png.getWidth();
-		height = png.getHeight();
+		
+		width = new ImageIcon(chuckImages[imageIndex].toURL()).getIconWidth();
+		height = new ImageIcon(chuckImages[imageIndex].toURL()).getIconHeight();
+
 		if (c.getDirection() == - 1){
 			x = (c.getX() - (width  - xBounds));
 			y = (c.getY() - (height - yBounds));
