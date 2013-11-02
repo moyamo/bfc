@@ -58,7 +58,5 @@ public class EventProcessor implements InputHandle{
 				}
 			}
 		}
-		inputQueue.clear();
-	}
-	
+	}	
 }

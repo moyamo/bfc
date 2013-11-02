@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Toolkit;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -13,8 +15,8 @@ import com.moyamo.bfc.Constants;
 import com.moyamo.bfc.GameHolder;
 import com.moyamo.bfc.controller.desktop.GameBoardListener;
 import com.moyamo.bfc.controller.desktop.RepeatingReleasedEventsFixer;
+import com.moyamo.bfc.debug.ExceptionDialog;
 import com.moyamo.bfc.model.EntityStore;
-import com.moyamo.bfc.model.EventProcessor;
 import com.moyamo.bfc.model.GameLoop;
 import com.moyamo.bfc.model.entities.Bullet;
 import com.moyamo.bfc.model.entities.Entity;
@@ -39,7 +41,11 @@ public class GameBoard extends JComponent implements GameHolder, Constants{
 	long timeSince;
 	public GameBoard() {
 		engine = new GameLoop(this);
-		addKeyListener(new GameBoardListener(EventProcessor.self()));
+		try {
+			addKeyListener(new GameBoardListener(InetAddress.getLocalHost()));
+		} catch (UnknownHostException e) {
+			new ExceptionDialog(e);
+		}
 		setDoubleBuffered(true);
 		setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
 		setMinimumSize(getPreferredSize());

@@ -2,8 +2,8 @@ package com.moyamo.bfc.controller.desktop;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.net.InetAddress;
 
-import com.moyamo.bfc.InputHandle;
 import com.moyamo.bfc.view.desktop.gui.GameBoard;
 
 /**
@@ -15,12 +15,10 @@ import com.moyamo.bfc.view.desktop.gui.GameBoard;
  *
  */
 public class GameBoardListener implements KeyListener{
-	InputHandle handle;
-	EventPasser passer;
+	private EventPasser passer;
 	
-	public GameBoardListener (InputHandle handle) {
-		this.handle = handle;
-		passer = new EventPasser(handle);
+	public GameBoardListener (InetAddress serverAddress) {
+		passer = new EventPasser(serverAddress);
 	}
 	
 	@Override

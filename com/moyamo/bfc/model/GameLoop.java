@@ -11,7 +11,7 @@ import com.moyamo.bfc.model.events.AttackEvent;
 import com.moyamo.bfc.model.events.DestroyedEvent;
 import com.moyamo.bfc.model.events.PlayerDeathEvent;
 import com.moyamo.bfc.model.events.ProjectileEvent;
-import com.moyamo.bfc.model.events.ProjectileEvent.projType;;
+import com.moyamo.bfc.model.events.ProjectileEvent.projType;
 
 
 /**
@@ -23,6 +23,7 @@ import com.moyamo.bfc.model.events.ProjectileEvent.projType;;
  */
 public class GameLoop implements Runnable{
 	private Thread game;
+	private Thread eventReceiver;
 	private GameHolder parent;
 	private boolean gameRunning;
 	private AttackHandler aHandler; 
@@ -36,6 +37,7 @@ public class GameLoop implements Runnable{
 	 */
 	public GameLoop (GameHolder parent){
 		game = new Thread(this);
+		eventReceiver = new Thread(new InputEventReceiver());
 		this.parent = parent;
 		gameRunning = false;
 		aHandler = new AttackHandler();
@@ -47,6 +49,7 @@ public class GameLoop implements Runnable{
 	public void start(){
 		setGameRunning(true);
 		game.start();
+		eventReceiver.start();
 	}
 	
 	public void run() {		
