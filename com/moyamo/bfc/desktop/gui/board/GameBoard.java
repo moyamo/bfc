@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Toolkit;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -55,7 +53,7 @@ public class GameBoard extends JComponent implements GameHolder, Constants{
 		requestFocus();
 		engine.start();
 		timeSince = System.currentTimeMillis();
-		SpriteManager.self().addSprite(new BGSprite(ImageStore.getBGURI(), this));
+		SpriteManager.self().addSprite(new BGSprite(ImageStore.getBGImage(), this));
 		SpriteManager.self().addSprite(new ChuckSprite(0, this));
 		SpriteManager.self().addSprite(new BruceSprite(1, this));
 		SpriteManager.self().addSprite(new PlayerStatBar(0));
@@ -68,8 +66,6 @@ public class GameBoard extends JComponent implements GameHolder, Constants{
 	 * Draws sprites.
 	 * 
 	 * @param g - Graphics
-	 * @throws MalformedURLException 
-	 * @throws URISyntaxException 
 	 */
 	private void drawSprites(Graphics g){
 		List <IDrawable>entities = SpriteManager.self().getSprites();
