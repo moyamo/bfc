@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import com.moyamo.bfc.InputEvent;
+import com.moyamo.bfc.InputEvent.FocusPlayer;
 import com.moyamo.bfc.InputHandle;
 
 /** Passes events to entities **/
@@ -44,15 +45,15 @@ public class EventProcessor implements InputHandle{
 		while(!inputQueue.isEmpty()){
 			e = inputQueue.remove();
 			if (e.isPress()) {
-				if (e.getFocus() == InputEvent.PLAYER1){
+				if (e.getFocus() == FocusPlayer.PLAYER1){
 					store.getCombatant(0).pressEvent(e);
-				} else if (e.getFocus() == InputEvent.PLAYER2){
+				} else if (e.getFocus() == FocusPlayer.PLAYER2){
 					store.getCombatant(1).pressEvent(e);
 				}
 			} else { 
-				if (e.getFocus() == InputEvent.PLAYER1){
+				if (e.getFocus() == FocusPlayer.PLAYER1){
 					store.getCombatant(0).releaseEvent(e);
-				} else if (e.getFocus() == InputEvent.PLAYER2){
+				} else if (e.getFocus() == FocusPlayer.PLAYER2){
 					store.getCombatant(1).releaseEvent(e);
 				}
 			}

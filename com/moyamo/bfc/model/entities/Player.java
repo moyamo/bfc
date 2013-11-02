@@ -2,6 +2,7 @@ package com.moyamo.bfc.model.entities;
 
 import com.moyamo.bfc.Constants;
 import com.moyamo.bfc.InputEvent;
+import com.moyamo.bfc.InputEvent.InputKey;
 import com.moyamo.bfc.InputHandle;
 import com.moyamo.bfc.model.events.AttackEvent;
 import com.moyamo.bfc.model.events.PlayerDeathEvent;
@@ -111,22 +112,22 @@ public abstract class Player extends Entity implements InputHandle, IMovable{
 	}
 	
 	public void pressEvent(InputEvent e) {
-		if (e.getInputString() == InputEvent.LEFT) {
+		if (e.getInputString() == InputKey.LEFT) {
 			setDirection((byte) -1);
 			setMoving(true);
-		}else if (e.getInputString() == InputEvent.RIGHT) {
+		}else if (e.getInputString() == InputKey.RIGHT) {
 			setDirection((byte) 1);
 			setMoving(true);
-		}else if (e.getInputString() == InputEvent.ATTACK1){
+		}else if (e.getInputString() == InputKey.ATTACK1){
 			attack();
-		}else if (e.getInputString() == InputEvent.UP) {
+		}else if (e.getInputString() == InputKey.UP) {
 			jump();
 		}
 	}
 	
 	public void releaseEvent(InputEvent e){
-		if (e.getInputString() == InputEvent.LEFT ||
-			e.getInputString() == InputEvent.RIGHT) {
+		if (e.getInputString() == InputKey.LEFT ||
+			e.getInputString() == InputKey.RIGHT) {
 			setMoving(false);
 		}
 	}

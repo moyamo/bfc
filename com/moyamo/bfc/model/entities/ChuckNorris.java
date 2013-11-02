@@ -1,8 +1,9 @@
 package com.moyamo.bfc.model.entities;
 
 import com.moyamo.bfc.InputEvent;
-import com.moyamo.bfc.model.events.ProjectileEvent.projType;
+import com.moyamo.bfc.InputEvent.InputKey;
 import com.moyamo.bfc.model.events.ProjectileEvent;
+import com.moyamo.bfc.model.events.ProjectileEvent.projType;
 
 
 /**
@@ -47,7 +48,7 @@ public class ChuckNorris extends Player{
 	@Override
 	public void pressEvent(InputEvent e) {
 		super.pressEvent(e);
-		if(e.getInputString() == InputEvent.ATTACK2){
+		if(e.getInputString() == InputKey.ATTACK2){
 			shoot();
 		}
 	}

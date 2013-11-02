@@ -2,6 +2,7 @@ package com.moyamo.bfc.model.entities;
 
 import com.moyamo.bfc.Constants;
 import com.moyamo.bfc.InputEvent;
+import com.moyamo.bfc.InputEvent.InputKey;
 import com.moyamo.bfc.model.events.AttackEvent;
 
 
@@ -60,7 +61,7 @@ public class BruceLee extends Player{
 	@Override
 	public void pressEvent(InputEvent e) {
 		super.pressEvent(e);
-		if(e.getInputString() == InputEvent.ATTACK2){
+		if(e.getInputString() == InputKey.ATTACK2){
 			flyKick();
 		}
 	}
