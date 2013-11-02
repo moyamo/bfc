@@ -2,11 +2,9 @@ package com.moyamo.bfc.desktop.gui.sprites;
 
 import java.awt.Graphics;
 import java.awt.image.ImageObserver;
-import java.io.IOException;
 
 import javax.swing.ImageIcon;
 
-import com.moyamo.bfc.debug.ExceptionDialog;
 import com.moyamo.bfc.entities.Player;
 import com.moyamo.bfc.logic.EntityStore;
 import com.moyamo.bfc.res.ImageStore;

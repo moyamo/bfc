@@ -168,7 +168,7 @@ public abstract class Player extends Entity implements InputHandle, IMovable{
 		return basicAttackDamage;
 	}
 
-	private void setBasicAttackDamage(int basicAttackDamage) {
+	protected void setBasicAttackDamage(int basicAttackDamage) {
 		this.basicAttackDamage = basicAttackDamage;
 	}
 	
