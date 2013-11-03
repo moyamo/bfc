@@ -1,6 +1,7 @@
 package com.moyamo.bfc.model.entities;
 
 import java.awt.geom.Point2D;
+import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -13,7 +14,7 @@ import java.util.Queue;
  * @version 0.0.2
  *
  */
-public class Entity {
+public  abstract class Entity {
 	private Queue<Object> events;
 	private Queue<String> drawEvents;
 	private Point2D position;
@@ -116,4 +117,6 @@ public class Entity {
 	public Object nextEvent(){
 		return events.poll();
 	}
+	public abstract ByteBuffer getByteBuffer();
+	public abstract ByteBuffer getUniqueName();
 }

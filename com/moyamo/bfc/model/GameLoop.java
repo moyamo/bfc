@@ -1,6 +1,8 @@
 package com.moyamo.bfc.model;
 
-import com.moyamo.bfc.GameHolder;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import com.moyamo.bfc.model.entities.BruceLee;
 import com.moyamo.bfc.model.entities.Bullet;
 import com.moyamo.bfc.model.entities.ChuckNorris;
@@ -24,23 +26,28 @@ import com.moyamo.bfc.model.events.ProjectileEvent.projType;
 public class GameLoop implements Runnable{
 	private Thread game;
 	private Thread eventReceiver;
-	private GameHolder parent;
 	private boolean gameRunning;
 	private AttackHandler aHandler; 
 	private EntityStore store = EntityStore.self();
 	private EventProcessor evProc = EventProcessor.self();
 	private CollisionDetector colDetect = new CollisionDetector();
+	private ViewSender sender;
 	/**
 	 * Creates and instance of the GameEngine. It requires a {@link com.moyamo.bfc.GameHolder GameHolder} to draw images.
 	 * 
 	 * @param parent - the object which draws the game board
 	 */
-	public GameLoop (GameHolder parent){
+	public GameLoop (){
 		game = new Thread(this);
 		eventReceiver = new Thread(new InputEventReceiver());
-		this.parent = parent;
 		gameRunning = false;
 		aHandler = new AttackHandler();
+		try {
+			sender = new ViewSender(InetAddress.getLocalHost());
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -50,13 +57,13 @@ public class GameLoop implements Runnable{
 		setGameRunning(true);
 		game.start();
 		eventReceiver.start();
+		new Thread(sender).start();
 	}
 	
 	public void run() {		
 		store.addCombatant(new ChuckNorris(50, 300, 1));
 		store.addCombatant(new BruceLee(450, 300, -1));
 		long lastLoopTime = System.currentTimeMillis();
-		parent.notifyDraw();
 
 		while (isGameRunning()) {
 			long timeNow = System.currentTimeMillis();
@@ -86,7 +93,11 @@ public class GameLoop implements Runnable{
 				}
 			}
 			colDetect.checkCollisions();
-			parent.notifyDraw();
+			
+			for (int i = 0; i < store.totalEntites(); i++){
+				if (store.getEntity(i) == null) continue;
+				sender.addEntityToQueue(store.getEntity(i), i);
+			}
 			try {
 				Thread.sleep(20);
 			}catch (InterruptedException e) {
@@ -119,7 +130,6 @@ public class GameLoop implements Runnable{
 			ProjectileEvent p = (ProjectileEvent)e;
 			if(p.type == projType.BULLET){
 				int id = store.addEntity(new Bullet(p.origX, p.origY, p.speedX, p.speedY));
-				parent.addSprite(id);
 				colDetect.addBullet(id);
 			}
 		} else if (e instanceof DestroyedEvent) {

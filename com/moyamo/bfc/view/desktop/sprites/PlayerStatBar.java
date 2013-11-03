@@ -2,9 +2,10 @@ package com.moyamo.bfc.view.desktop.sprites;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.nio.ByteBuffer;
 
-import com.moyamo.bfc.model.EntityStore;
-import com.moyamo.bfc.model.entities.Player;
+import com.moyamo.bfc.debug.Out;
+import com.moyamo.bfc.view.SpriteManager;
 
 public class PlayerStatBar implements IDrawable{
 	private int playerID, x, y;
@@ -12,7 +13,7 @@ public class PlayerStatBar implements IDrawable{
 	
 	public PlayerStatBar(int playerID){
 		this.playerID = playerID;
-		if (playerID == 0) {
+		if (playerID == 1) {
 			x = 5;
 			y = 5;
 		} else {
@@ -23,11 +24,11 @@ public class PlayerStatBar implements IDrawable{
 	
 	@Override
 	public void draw(Graphics g, long timeDiff) {
-		Player p = EntityStore.self().getCombatant(playerID);
+		IDrawablePlayer p = (IDrawablePlayer) SpriteManager.self().getSprites().get(playerID);
 		int health = p.getHealth();
-		int momentum = (int)p.getMomentum();
+		int momentum = p.getMomentum();
 		g.setColor(Color.RED);
-		g.drawString("Player " + (playerID + 1), x, y + 7);
+		g.drawString("Player " + playerID, x, y + 7);
 		g.fillRect(x, y + 10, (int) (health*scale), 5);
 		g.setColor(Color.BLUE);
 		g.fillRect(x, y + 17, (int)(momentum*scale), 5);
@@ -37,5 +38,8 @@ public class PlayerStatBar implements IDrawable{
 	public boolean destroyed() {
 		return false;
 	}
+
+	@Override
+	public void update(ByteBuffer buffer) {}
 
 }

@@ -3,6 +3,7 @@ package com.moyamo.bfc.view.desktop.sprites;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.ImageObserver;
+import java.nio.ByteBuffer;
 
 public class BGSprite implements IDrawable{
 	Image image;
@@ -21,5 +22,7 @@ public class BGSprite implements IDrawable{
 	public boolean destroyed() {
 		return false;
 	}
-	
+
+	@Override
+	public void update(ByteBuffer buffer) {};
 }

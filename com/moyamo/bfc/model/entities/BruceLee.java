@@ -1,8 +1,15 @@
 package com.moyamo.bfc.model.entities;
 
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
+
 import com.moyamo.bfc.Constants;
 import com.moyamo.bfc.InputEvent;
 import com.moyamo.bfc.InputEvent.InputKey;
+import com.moyamo.bfc.debug.ExceptionDialog;
 import com.moyamo.bfc.model.events.AttackEvent;
 
 
@@ -71,5 +78,32 @@ public class BruceLee extends Player{
 			setY(Constants.GROUND);
 			setXSpeed(0);
 		}
+	}
+
+	@Override
+	public ByteBuffer getByteBuffer() {
+		ByteBuffer buffer = ByteBuffer.allocate(128);
+		buffer.putInt(getX());
+		buffer.putInt(getY());
+		buffer.putInt(getDirection());
+		buffer.putInt(getHealth());
+		buffer.putInt((int)getMomentum());
+		buffer.putInt(onGround() ? 1 : 0);
+		CharsetEncoder encoder = Charset.availableCharsets().get("UTF-8").newEncoder();
+		for (String e = nextDrawEvent(); e != null; e = nextDrawEvent()){
+			e += " ";
+			try {
+				buffer.put(encoder.encode(CharBuffer.wrap(e.toCharArray())));
+			} catch (CharacterCodingException e1) {
+				new ExceptionDialog(e1);
+			}
+		}
+		buffer.rewind();
+		return buffer;
+	}
+
+	@Override
+	public ByteBuffer getUniqueName() {
+		return Charset.availableCharsets().get("UTF-8").encode("BRUCELEE");
 	}
 }

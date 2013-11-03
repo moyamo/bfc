@@ -12,19 +12,15 @@ import java.util.List;
 import javax.swing.JComponent;
 
 import com.moyamo.bfc.Constants;
-import com.moyamo.bfc.GameHolder;
 import com.moyamo.bfc.controller.desktop.GameBoardListener;
 import com.moyamo.bfc.controller.desktop.RepeatingReleasedEventsFixer;
 import com.moyamo.bfc.debug.ExceptionDialog;
-import com.moyamo.bfc.model.EntityStore;
 import com.moyamo.bfc.model.GameLoop;
-import com.moyamo.bfc.model.entities.Bullet;
-import com.moyamo.bfc.model.entities.Entity;
 import com.moyamo.bfc.res.ImageStore;
 import com.moyamo.bfc.view.SpriteManager;
+import com.moyamo.bfc.view.ViewReceiver;
 import com.moyamo.bfc.view.desktop.sprites.BGSprite;
 import com.moyamo.bfc.view.desktop.sprites.BruceSprite;
-import com.moyamo.bfc.view.desktop.sprites.BulletSprite;
 import com.moyamo.bfc.view.desktop.sprites.ChuckSprite;
 import com.moyamo.bfc.view.desktop.sprites.IDrawable;
 import com.moyamo.bfc.view.desktop.sprites.PlayerStatBar;
@@ -36,11 +32,13 @@ import com.moyamo.bfc.view.desktop.sprites.PlayerStatBar;
  * @version 0.0.1
  * 
  */
-public class GameBoard extends JComponent implements GameHolder, Constants{
+public class GameBoard extends JComponent implements Constants, Runnable{
 	GameLoop engine;
+	Thread receiver;
 	long timeSince;
 	public GameBoard() {
-		engine = new GameLoop(this);
+		engine = new GameLoop();
+		receiver = new Thread(new ViewReceiver());
 		try {
 			addKeyListener(new GameBoardListener(InetAddress.getLocalHost()));
 		} catch (UnknownHostException e) {
@@ -64,10 +62,10 @@ public class GameBoard extends JComponent implements GameHolder, Constants{
 		SpriteManager.self().addSprite(new BGSprite(ImageStore.getBGImage(), this));
 		SpriteManager.self().addSprite(new ChuckSprite(0, this));
 		SpriteManager.self().addSprite(new BruceSprite(1, this));
-		SpriteManager.self().addSprite(new PlayerStatBar(0));
 		SpriteManager.self().addSprite(new PlayerStatBar(1));
-
-
+		SpriteManager.self().addSprite(new PlayerStatBar(2));
+		receiver.start();
+		new Thread(this).start();
 	}
 
 	/**
@@ -82,7 +80,9 @@ public class GameBoard extends JComponent implements GameHolder, Constants{
 		long timeDiff = System.currentTimeMillis() - timeSince;
 		while (iterator.hasNext()){
 			entity = iterator.next();
-			entity.draw(g, timeDiff);
+			if (entity != null){
+				entity.draw(g, timeDiff);
+			}
 		}
 		timeSince = System.currentTimeMillis();
 	}
@@ -99,18 +99,17 @@ public class GameBoard extends JComponent implements GameHolder, Constants{
 		g.dispose();
 	}
 	
-	@Override
-	public void notifyDraw() {
-		repaint();
-	}
 
 
 	@Override
-	public void addSprite(int id) {
-		Entity entity = EntityStore.self().getEntity(id);
-		if (entity instanceof Bullet){
-			SpriteManager.self().addSprite(new BulletSprite(id));
+	public void run() {
+		while(true){
+			repaint();
+			try {
+				Thread.sleep(20);
+			} catch (InterruptedException e) {
+				new ExceptionDialog(e);
+			}
 		}
-
 	}
 }

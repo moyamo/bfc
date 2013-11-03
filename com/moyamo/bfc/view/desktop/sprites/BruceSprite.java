@@ -2,18 +2,22 @@ package com.moyamo.bfc.view.desktop.sprites;
 
 import java.awt.Graphics;
 import java.awt.image.ImageObserver;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.util.StringTokenizer;
 
 import javax.swing.ImageIcon;
 
-import com.moyamo.bfc.model.EntityStore;
-import com.moyamo.bfc.model.entities.BruceLee;
+import com.moyamo.bfc.debug.ExceptionDialog;
 import com.moyamo.bfc.res.ImageStore;
 
-public class BruceSprite implements IDrawable{
-	private int entityID;
+public class BruceSprite implements IDrawablePlayer{
 	private static final int ANIM_DELAY = 75;
 	private int animCount = ANIM_DELAY;
-	private boolean attacking, flykicking;
+	private boolean attacking, flykicking, onGround;
 	private ImageObserver observer;
 	private ImageIcon leeImage;
 	private ImageIcon leePunchImage;
@@ -22,10 +26,10 @@ public class BruceSprite implements IDrawable{
 	private ImageIcon rightLeeImage;
 	private ImageIcon rightLeePunchImage;
 	private ImageIcon rightLeeFlyKickImage;
-	private int x, y, width, height, xBounds, yBounds;
+	private int x, y, direction, width, height, xBounds, yBounds;
+	private int posX, posY, health, momentum;
 	
 	public BruceSprite(int entityID, ImageObserver observer){
-		this.entityID = entityID;
 		this.observer = observer;
 		ImageIcon limage[] = ImageStore.getBruceImages();
 		leeImage = limage[0];
@@ -41,29 +45,26 @@ public class BruceSprite implements IDrawable{
 	
 	@Override
 	public void draw(Graphics g, long timeDiff) {
-		BruceLee lee = (BruceLee)EntityStore.self().getCombatant(entityID);
-		setDrawFlags(lee);
-		x = lee.getX();
-		y = lee.getY();
+		
 		if(animCount < 0){
 			if (attacking){
-				if (lee.getDirection() == -1){
+				if (direction == -1){
 					lastImage = leePunchImage;
 				}else{
 					lastImage = rightLeePunchImage;
 				}
 				attacking = false;
 			}else if (flykicking){
-				if (lee.getDirection() == -1){
+				if (direction == -1){
 					lastImage = leeFlyKickImage;
 				}else{
 					lastImage = rightLeeFlyKickImage;
 				}
-				if (lee.onGround()){
+				if (onGround){
 					flykicking = false;
 				}
 			}else{
-				if (lee.getDirection() == -1){
+				if (direction == -1){
 					lastImage = leeImage;
 				}else{
 					lastImage = rightLeeImage;
@@ -75,12 +76,12 @@ public class BruceSprite implements IDrawable{
 		}
 		width = lastImage.getIconWidth();
 		height = lastImage.getIconHeight();
-		if (lee.getDirection() == - 1){
-			x = (lee.getX() - (width  - xBounds));
-			y = (lee.getY() - (height - yBounds));
+		if (direction == - 1){
+			x = (posX - (width  - xBounds));
+			y = (posY - (height - yBounds));
 		} else {
-			x = lee.getX();
-			y = lee.getY();
+			x = posX;
+			y = posY;
 		}
 		g.drawImage(lastImage.getImage(), x, y, observer);
 	}
@@ -90,13 +91,42 @@ public class BruceSprite implements IDrawable{
 		return false;
 	}
 	
-	private void setDrawFlags(BruceLee lee){
-		for(String e = lee.nextDrawEvent(); e != null; e = lee.nextDrawEvent()){
+	private void setDrawFlags(StringTokenizer token){
+		while (token.hasMoreTokens()) {
+			String e = token.nextToken();
 			if (e.equals("attack")){
 				attacking = true;
 			}else if (e.equals("flykick")){
 				flykicking = true;
 			}
 		}
-	}		
+	}
+	
+	public void update(ByteBuffer buffer){	
+		CharsetDecoder decoder = Charset.availableCharsets().get("UTF-8").newDecoder();
+		posX = buffer.getInt();
+		posY = buffer.getInt();
+		direction = buffer.getInt();
+		health = buffer.getInt();
+		momentum = buffer.getInt();
+		onGround = buffer.getInt() != 0 ? true : false;
+		try {
+			CharBuffer charbuff = decoder.decode(buffer);
+			StringTokenizer tokens = new StringTokenizer(charbuff.toString());
+			setDrawFlags(tokens);
+		} catch (CharacterCodingException e) {
+			new ExceptionDialog(e);
+			return;
+		}
+	}
+
+	@Override
+	public int getHealth() {
+		return health;
+	}
+
+	@Override
+	public int getMomentum() {
+		return momentum;
+	}
 }

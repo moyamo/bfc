@@ -1,5 +1,7 @@
 package com.moyamo.bfc.model.entities;
 
+import java.nio.ByteBuffer;
+
 import com.moyamo.bfc.Constants;
 import com.moyamo.bfc.InputEvent;
 import com.moyamo.bfc.InputEvent.InputKey;

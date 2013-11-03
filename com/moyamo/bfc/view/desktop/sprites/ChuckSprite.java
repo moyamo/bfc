@@ -2,15 +2,20 @@ package com.moyamo.bfc.view.desktop.sprites;
 
 import java.awt.Graphics;
 import java.awt.image.ImageObserver;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.util.StringTokenizer;
 
 import javax.swing.ImageIcon;
 
-import com.moyamo.bfc.model.EntityStore;
-import com.moyamo.bfc.model.entities.Player;
+import com.moyamo.bfc.debug.ExceptionDialog;
+import com.moyamo.bfc.debug.Out;
 import com.moyamo.bfc.res.ImageStore;
 
-public class ChuckSprite implements IDrawable{
-	private int entityID;
+public class ChuckSprite implements IDrawablePlayer{
 	private int x;
 	private int y;
 	private final int ANIM_DELAY = 170;
@@ -23,10 +28,12 @@ public class ChuckSprite implements IDrawable{
 	private int width, height;
 	private boolean attacking;
 	private boolean shooting;
+	private boolean isMoving;
+	private int direction;
+	private int posX, posY, health, momentum;
 	private ImageObserver observer;
 	
 	public ChuckSprite(int entityID, ImageObserver observer){
-		this.entityID = entityID;
 		this.observer = observer;
 		chuckImages = ImageStore.getChuckImageIcons();
 		xBounds = chuckImages[0].getIconWidth();
@@ -34,7 +41,6 @@ public class ChuckSprite implements IDrawable{
 	}
 	@Override
 	public void draw(Graphics g, long timeDiff) {
-		setDrawFlags();
 		doAnim(g,timeDiff,observer);
 	}
 	
@@ -49,9 +55,8 @@ public class ChuckSprite implements IDrawable{
 	 * @param timeDiff - time in milliseconds since doAnim was called.
 	 */
 	private void doAnim(Graphics g, double timeDiff, ImageObserver observer) {
-		Player c = EntityStore.self().getCombatant(entityID);
-		int facing = c.getDirection();
-		boolean moving = c.isMoving();
+		int facing = direction;
+		boolean moving = isMoving;
 		if(animCount <= 0){ //Slows down animation
 			if (!moving) { //If he is standing still
 				imageIndex = (facing + 3) / 2 - 1;
@@ -63,7 +68,7 @@ public class ChuckSprite implements IDrawable{
 				animStep = (animStep == 1) ? 2 : 1;
 				attacking = false;
 			}else if(shooting){
-				if (c.getDirection() == -1) imageIndex = 10;
+				if (direction == -1) imageIndex = 10;
 				else imageIndex = 11;
 				shooting = false;
 			}
@@ -75,20 +80,20 @@ public class ChuckSprite implements IDrawable{
 		width = chuckImages[imageIndex].getIconWidth();
 		height = chuckImages[imageIndex].getIconHeight();
 
-		if (c.getDirection() == - 1){
-			x = (c.getX() - (width  - xBounds));
-			y = (c.getY() - (height - yBounds));
+		if (direction == - 1){
+			x = (posX - (width  - xBounds));
+			y = (posY - (height - yBounds));
 		} else {
-			x = c.getX();
-			y = c.getY();
+			x = posX;
+			y = posY;
 		}
 		
 		g.drawImage(chuckImages[imageIndex].getImage(),x,y,observer);
 	}
 	
-	private void setDrawFlags(){
-		Player c = EntityStore.self().getCombatant(entityID);
-		for(String e = c.nextDrawEvent(); e != null; e = c.nextDrawEvent()) {
+	private void setDrawFlags(StringTokenizer tokens){
+		while(tokens.hasMoreTokens()){
+			String e = tokens.nextToken();
 			if (e.equals("attack")){
 				attacking = true;
 			} else if (e.equals("shoot")){
@@ -99,5 +104,31 @@ public class ChuckSprite implements IDrawable{
 	@Override
 	public boolean destroyed() {
 		return false;
+	}
+	@Override
+	public void update(ByteBuffer buffer){
+		CharsetDecoder decoder = Charset.availableCharsets().get("UTF-8").newDecoder();
+		posX = buffer.getInt();
+		posY = buffer.getInt();
+		direction = buffer.getInt();
+		health = buffer.getInt();
+		momentum = buffer.getInt();
+		isMoving = buffer.getInt() != 0 ? true : false;
+		try {
+			CharBuffer charbuff = decoder.decode(buffer);
+			StringTokenizer tokens = new StringTokenizer(charbuff.toString());
+			setDrawFlags(tokens);
+		} catch (CharacterCodingException e) {
+			new ExceptionDialog(e);
+			return;
+		}
+	}
+	@Override
+	public int getHealth() {
+		return health;
+	}
+	@Override
+	public int getMomentum() {
+		return momentum;
 	}
 }
