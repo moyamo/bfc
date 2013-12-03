@@ -12,7 +12,6 @@ import java.util.StringTokenizer;
 import javax.swing.ImageIcon;
 
 import com.moyamo.bfc.debug.ExceptionDialog;
-import com.moyamo.bfc.debug.Out;
 import com.moyamo.bfc.res.ImageStore;
 
 public class ChuckSprite implements IDrawablePlayer{

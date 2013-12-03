@@ -26,6 +26,7 @@ import com.moyamo.bfc.model.events.ProjectileEvent.projType;
 public class GameLoop implements Runnable{
 	private Thread game;
 	private Thread eventReceiver;
+	private Thread senderThread;
 	private boolean gameRunning;
 	private AttackHandler aHandler; 
 	private EntityStore store = EntityStore.self();
@@ -42,8 +43,13 @@ public class GameLoop implements Runnable{
 		eventReceiver = new Thread(new InputEventReceiver());
 		gameRunning = false;
 		aHandler = new AttackHandler();
+		
+		game.setName("loopThread");
+		eventReceiver.setName("serverReceiverThread");
 		try {
 			sender = new ViewSender(InetAddress.getLocalHost());
+			senderThread = new Thread(sender);
+			senderThread.setName("entitySenderThread");
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -57,7 +63,7 @@ public class GameLoop implements Runnable{
 		setGameRunning(true);
 		game.start();
 		eventReceiver.start();
-		new Thread(sender).start();
+		senderThread.start();
 	}
 	
 	public void run() {		

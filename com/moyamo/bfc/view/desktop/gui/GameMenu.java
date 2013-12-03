@@ -7,13 +7,17 @@ import javax.swing.JPanel;
 import com.moyamo.bfc.Constants;
 
 public class GameMenu extends JFrame{
-
+	JPanel mainPanel;
+	JButton singlePlayer;
+	JButton directIP;
+	JButton multiplayer;
+	
 	public GameMenu() {
-		JPanel mainPanel = new JPanel();
-		JButton singlePlayer = new JButton("Single Player");
-		JButton directIP = new JButton("Direct IP");
-		JButton multiplayer = new JButton("Multiplayer");
-		
+		mainPanel = new JPanel();
+		singlePlayer = new JButton("Single Player");
+		directIP = new JButton("Direct IP");
+		multiplayer = new JButton("Multiplayer");
+				
 		singlePlayer.addActionListener(new GameMenuListener(this));
 		directIP.addActionListener(new GameMenuListener(this));
 		multiplayer.addActionListener(new GameMenuListener(this));
@@ -24,8 +28,9 @@ public class GameMenu extends JFrame{
 		
 		this.add(mainPanel);
 		this.setTitle(Constants.GAME_NAME);
-		this.pack();
+		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.setResizable(false);
+		this.pack();
 		this.setVisible(true);
 	}
 }

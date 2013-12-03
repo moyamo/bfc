@@ -10,7 +10,6 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import com.moyamo.bfc.debug.ExceptionDialog;
-import com.moyamo.bfc.debug.Out;
 import com.moyamo.bfc.model.entities.Entity;
 
 public class ViewSender implements Runnable{

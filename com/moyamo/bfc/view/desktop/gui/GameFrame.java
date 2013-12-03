@@ -1,5 +1,7 @@
 package com.moyamo.bfc.view.desktop.gui;
 
+import java.net.InetAddress;
+
 import javax.swing.JFrame;
 
 import com.moyamo.bfc.Constants;
@@ -15,9 +17,9 @@ import com.moyamo.bfc.debug.Out;
  */
 public class GameFrame extends JFrame implements Constants{
 	
-	public GameFrame() {
+	public GameFrame(InetAddress serverAddress) {
 		String title = GAME_NAME;
-		GameBoard game = new GameBoard();
+		GameBoard game = new GameBoard(serverAddress);
 		add(game);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);

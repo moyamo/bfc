@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.nio.ByteBuffer;
 
-import com.moyamo.bfc.debug.Out;
 import com.moyamo.bfc.view.SpriteManager;
 
 public class PlayerStatBar implements IDrawable{
