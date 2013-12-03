@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Toolkit;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -14,6 +13,7 @@ import com.moyamo.bfc.Constants;
 import com.moyamo.bfc.controller.desktop.GameBoardListener;
 import com.moyamo.bfc.controller.desktop.RepeatingReleasedEventsFixer;
 import com.moyamo.bfc.debug.ExceptionDialog;
+import com.moyamo.bfc.debug.Out;
 import com.moyamo.bfc.res.ImageStore;
 import com.moyamo.bfc.view.SpriteManager;
 import com.moyamo.bfc.view.ViewReceiver;

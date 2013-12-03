@@ -26,7 +26,7 @@ class GameMenuListener implements ActionListener{
 		}
 	}
 	private void startSinglePlayerGame() {
-		new GameFrame(InetAddress.getLoopbackAddress());
 		new GameLoop().start();
+		new GameFrame(InetAddress.getLoopbackAddress());
 	}
 }

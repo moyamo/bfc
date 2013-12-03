@@ -11,4 +11,5 @@ public interface Constants {
 	final int GROUND=560;
 	final int GRAVITY=100;
 	final int AIR_RESISTENCE = 1;
+	final String HAND_SHAKE = "HELLOBFC";
 }

@@ -12,14 +12,14 @@ import java.util.Queue;
 import com.moyamo.bfc.debug.ExceptionDialog;
 import com.moyamo.bfc.model.entities.Entity;
 
-public class ViewSender implements Runnable{
+public class ViewSender implements Runnable, AddressBook{
 	private InetAddress viewAddress;
+	private int viewPort;
 	private DatagramSocket viewSocket;
 	private Queue<Entity> entityQueue = new LinkedList<Entity>();
 	private Queue<Integer> idQueue = new LinkedList<Integer>();
 	
-	ViewSender(InetAddress address){
-		this.viewAddress = address;
+	ViewSender(){
 		try {
 			this.viewSocket = new DatagramSocket();
 		} catch (SocketException e) {
@@ -28,13 +28,16 @@ public class ViewSender implements Runnable{
 	}
 	
 	synchronized void sendEntity(Entity ent, int id) {
+		if (viewAddress == null){
+			return;
+		}
 		DatagramPacket packet;
 		ByteBuffer firstbuff = ent.getByteBuffer();
 		ByteBuffer buff = ByteBuffer.allocate(256);
 		buff.putInt(id);
 		buff.put(ent.getUniqueName());
 		buff.put(firstbuff);
-		packet = new DatagramPacket(buff.array(), buff.limit(), viewAddress, 1730);
+		packet = new DatagramPacket(buff.array(), buff.limit(), viewAddress, viewPort);
 		try {
 			viewSocket.send(packet);
 		} catch (IOException e) {
@@ -58,6 +61,21 @@ public class ViewSender implements Runnable{
 				}
 			}
 			sendEntity(entityQueue.remove(), idQueue.remove());
+		}
+	}
+	public void addAddress(InetAddress address, int port) {
+		this.viewAddress = address;
+		this.viewPort = port;
+	}
+
+	private boolean first = true;
+	@Override
+	public boolean isAddressIn(InetAddress address) {
+		if (first){
+			first = !first;
+			return false;
+		} else {
+			return true;
 		}
 	}
 }

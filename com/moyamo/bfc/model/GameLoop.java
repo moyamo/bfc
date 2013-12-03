@@ -40,22 +40,19 @@ public class GameLoop implements Runnable{
 	 */
 	public GameLoop (){
 		game = new Thread(this);
-		eventReceiver = new Thread(new InputEventReceiver());
-		gameRunning = false;
-		aHandler = new AttackHandler();
-		
 		game.setName("loopThread");
+		gameRunning = false;
+
+		sender = new ViewSender();
+		senderThread = new Thread(sender);
+		senderThread.setName("entitySenderThread");
+		
+		eventReceiver = new Thread(new InputEventReceiver(sender));
 		eventReceiver.setName("serverReceiverThread");
-		try {
-			sender = new ViewSender(InetAddress.getLocalHost());
-			senderThread = new Thread(sender);
-			senderThread.setName("entitySenderThread");
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+		aHandler = new AttackHandler();
 	}
-	
+
 	/**
 	 * Begin running the game thread.
 	 */

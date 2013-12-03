@@ -27,7 +27,6 @@ public class GameFrame extends JFrame implements Constants{
 		setTitle(title);
 		setVisible(true);
 		pack();
-		Out.setDebug(true);
 		Out.print("Width: " +getWidth()+ "\n" + "Height: " + getHeight());
 		game.start();
 	}
