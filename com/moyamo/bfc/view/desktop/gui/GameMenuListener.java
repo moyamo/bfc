@@ -3,6 +3,7 @@ package com.moyamo.bfc.view.desktop.gui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import javax.swing.JButton;
 
@@ -22,11 +23,29 @@ class GameMenuListener implements ActionListener{
 			if (pressed == parent.singlePlayer) {
 				startSinglePlayerGame();
 				parent.dispose();
+			} else if (pressed == parent.server) {
+				startServer();
+				parent.status.setText("Server should have started");
+			} else if (pressed == parent.directIP) {
+				try {
+					startClient(InetAddress.getByName(parent.ip.getText()));
+				} catch (UnknownHostException e1) {
+					parent.status.setText("Unknown Host");
+				}
 			}
 		}
 	}
 	private void startSinglePlayerGame() {
+		startServer();
+		startClient(InetAddress.getLoopbackAddress());
+	}
+	
+	private void startServer() {
 		new GameLoop().start();
-		new GameFrame(InetAddress.getLoopbackAddress());
+	}
+	
+	private void startClient(InetAddress address) {
+		new GameFrame(address);
+
 	}
 }

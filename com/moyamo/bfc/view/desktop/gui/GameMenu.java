@@ -8,6 +8,7 @@ import java.awt.LayoutManager;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -20,6 +21,7 @@ public class GameMenu extends JFrame{
 	JButton multiplayer;
 	JButton server;
 	JTextField ip;
+	JLabel status;
 	
 	public GameMenu() {
 		mainPanel = new JPanel();
@@ -28,16 +30,14 @@ public class GameMenu extends JFrame{
 		directIP = new JButton("Direct IP Connect");
 		server = new JButton("Server");
 		multiplayer = new JButton("Multiplayer");
-				
+		status = new JLabel();
+		
 		singlePlayer.addActionListener(new GameMenuListener(this));
 		directIP.addActionListener(new GameMenuListener(this));
 		server.addActionListener(new GameMenuListener(this));
 		multiplayer.addActionListener(new GameMenuListener(this));
 	
-		directIP.setEnabled(false);
-		server.setEnabled(false);
 		multiplayer.setEnabled(false);
-		ip.setEnabled(false);
 		ip.setToolTipText("IP Address");
 		
 		mainPanel.setLayout(new FlowLayout());
@@ -46,10 +46,11 @@ public class GameMenu extends JFrame{
 		mainPanel.add(directIP);
 		mainPanel.add(server);
 		mainPanel.add(multiplayer);
+		mainPanel.add(status);
 		
 		this.add(mainPanel);
 		this.setTitle(Constants.GAME_NAME);
-		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.pack();
 		this.setVisible(true);
 	}
