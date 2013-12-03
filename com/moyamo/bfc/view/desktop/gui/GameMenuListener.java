@@ -26,11 +26,13 @@ class GameMenuListener implements ActionListener{
 			} else if (pressed == parent.server) {
 				startServer();
 				parent.status.setText("Server should have started");
+				parent.pack();
 			} else if (pressed == parent.directIP) {
 				try {
 					startClient(InetAddress.getByName(parent.ip.getText()));
 				} catch (UnknownHostException e1) {
 					parent.status.setText("Unknown Host");
+					parent.pack();
 				}
 			}
 		}
