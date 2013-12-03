@@ -38,7 +38,7 @@ public class ViewReceiver implements Runnable {
 				if (entityToSprite.containsKey(id)) {
 					buffer.getInt();
 					buffer.getInt(); // Move pointer 8 bytes forward
-					SpriteManager.self().getSprite(entityToSprite.get(id).intValue()).update(buffer);
+					SpriteManager.self().updateSprite(entityToSprite.get(id).intValue(), buffer);
 				} else {
 					byte name[] = new byte[8];
 					buffer.get(name, 0, 8);

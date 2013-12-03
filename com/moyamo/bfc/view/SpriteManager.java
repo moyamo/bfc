@@ -1,5 +1,6 @@
 package com.moyamo.bfc.view;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +31,11 @@ public class SpriteManager {
 	public IDrawable getSprite(int i){
 		return spriteArray.get(i);
 	}
-	
+	public void updateSprite(int i, ByteBuffer buffer) {
+		if (getSprite(i) != null) {
+			getSprite(i).update(buffer);
+		}
+	}
 	public int addSprite(IDrawable sprite){
 		spriteArray.add(sprite);
 		return spriteArray.size() - 1;
