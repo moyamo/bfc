@@ -1,10 +1,6 @@
 package com.moyamo.bfc.view.desktop.gui;
 
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.LayoutManager;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
