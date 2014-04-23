@@ -22,11 +22,11 @@ public class GameFrame extends JFrame implements Constants{
 		GameBoard game = new GameBoard(serverAddress);
 		add(game);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setLocationRelativeTo(null);
 		setResizable(false);
+		pack();
+		setLocationRelativeTo(null);
 		setTitle(title);
 		setVisible(true);
-		pack();
 		Out.print("Width: " +getWidth()+ "\n" + "Height: " + getHeight());
 		game.start();
 	}
