@@ -10,15 +10,18 @@ import java.awt.event.KeyEvent;
  * @version 0.1
  */
 class PressSwallow{
-	static boolean keyTable [] = new boolean [1000];
+	boolean keyTable [];
 	
+	PressSwallow() {
+		 keyTable = new boolean [1000];
+	}
 	/**
 	 * Swallow pressEvents.
 	 * 
 	 * @param e - KeyEvent
 	 * @return swallowed event
 	 */
-	static KeyEvent pressEvent(KeyEvent e){
+	KeyEvent pressEvent(KeyEvent e){
 		if (!keyTable[e.getKeyCode()]) {
 			keyTable[e.getKeyCode()] = true;
 			return e;
@@ -32,7 +35,7 @@ class PressSwallow{
 	 * @param e - KeyEvent
 	 * @return Returns the keyEvent
 	 */
-	static KeyEvent releaseEvent(KeyEvent e){
+	KeyEvent releaseEvent(KeyEvent e){
 		keyTable[e.getKeyCode()] = false;
 		return e;
 	}

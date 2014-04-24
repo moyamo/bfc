@@ -10,10 +10,10 @@ import java.util.List;
 import javax.swing.JComponent;
 
 import com.moyamo.bfc.Constants;
+import com.moyamo.bfc.InputEvent.FocusPlayer;
 import com.moyamo.bfc.controller.desktop.GameBoardListener;
 import com.moyamo.bfc.controller.desktop.RepeatingReleasedEventsFixer;
 import com.moyamo.bfc.debug.ExceptionDialog;
-import com.moyamo.bfc.debug.Out;
 import com.moyamo.bfc.res.ImageStore;
 import com.moyamo.bfc.view.SpriteManager;
 import com.moyamo.bfc.view.ViewReceiver;
@@ -39,7 +39,10 @@ public class GameBoard extends JComponent implements Constants, Runnable{
 		receiver.setName("viewerReceiverThread");
 		viewerThread = new Thread(this);
 		viewerThread.setName("viewerThread");
-		addKeyListener(new GameBoardListener(serverAddress));
+		addKeyListener(new GameBoardListener(serverAddress, FocusPlayer.PLAYER2,
+				1));
+		addKeyListener(new GameBoardListener(serverAddress, FocusPlayer.PLAYER1,
+				0));
 		setDoubleBuffered(true);
 		setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
 		setMinimumSize(getPreferredSize());
@@ -79,6 +82,7 @@ public class GameBoard extends JComponent implements Constants, Runnable{
 				entity.draw(g, timeDiff);
 			}
 		}
+		System.out.println(timeDiff);
 		timeSince = System.currentTimeMillis();
 	}
 

@@ -2,6 +2,8 @@ package com.moyamo.bfc.controller.desktop;
 
 import java.awt.event.KeyEvent;
 import java.net.InetAddress;
+import java.util.Map;
+import java.util.TreeMap;
 
 import com.moyamo.bfc.InputEvent;
 import com.moyamo.bfc.InputEvent.FocusPlayer;
@@ -18,126 +20,47 @@ import com.moyamo.bfc.debug.Out;
  *
  */
 class EventPasser{
-	InputEventSender eventSender;
+	private InputEventSender eventSender;
+	private FocusPlayer player;
+	private Map<Integer, InputKey> keyToInputKey;
 	
-	public EventPasser(InetAddress serverAddress) {
+	public EventPasser(InetAddress serverAddress, FocusPlayer player) {
 		this.eventSender = new InputEventSender(serverAddress);
+		this.player = player;
+		this.keyToInputKey = new TreeMap<Integer, InputKey>();
 	}
 	
-	
+	public void setKeys(int left, int right, int up, int down, int atck1,
+			int atck2) {
+		Out.print("Keys: " + left + " " + right + " " + up + " " + down
+				+  " " + atck1 +  " " + atck2);
+		keyToInputKey.put(left, InputKey.LEFT);
+		keyToInputKey.put(right, InputKey.RIGHT);
+		keyToInputKey.put(up, InputKey.UP);
+		keyToInputKey.put(down, InputKey.DOWN);
+		keyToInputKey.put(atck1, InputKey.ATTACK1);
+		keyToInputKey.put(atck2, InputKey.ATTACK2);
+
+	}
 	void keyPressed(KeyEvent e) {
 		int key = e.getKeyCode();
 		
-		Out.print(e.getWhen() + ": " +"key " + e.getKeyChar()
-				+ " pressed");
-		if (key == KeyEvent.VK_A) {
-			InputEvent le = new InputEvent(InputKey.LEFT, FocusPlayer.PLAYER1,
+		if (keyToInputKey.containsKey(key)) {
+			Out.print(e.getWhen() + ": key " + e.getKeyChar() + " pressed");
+			InputEvent iE = new InputEvent(keyToInputKey.get(key), player,
 					true);
-			eventSender.sendInputEvent(le);
-		}else if (key == KeyEvent.VK_D) {
-			InputEvent le = new InputEvent(InputKey.RIGHT,
-			                               FocusPlayer.PLAYER1, true);
-			eventSender.sendInputEvent(le);
-		}else if (key == KeyEvent.VK_W) {
-			InputEvent le = new InputEvent(InputKey.UP, FocusPlayer.PLAYER1,
-					true);
-			eventSender.sendInputEvent(le);
-		}else if (key == KeyEvent.VK_S) {
-			InputEvent le = new InputEvent(InputKey.DOWN, FocusPlayer.PLAYER1,
-					true);
-			eventSender.sendInputEvent(le);
-		}else if (key == KeyEvent.VK_E) {
-			InputEvent le = new InputEvent(InputKey.ATTACK1,
-					FocusPlayer.PLAYER1, true);
-			eventSender.sendInputEvent(le);
-		}else if (key == KeyEvent.VK_Q) {
-			InputEvent le = new InputEvent(InputKey.ATTACK2,
-					FocusPlayer.PLAYER1, true);
-			eventSender.sendInputEvent(le);
-		}
-		
-		else if (key == KeyEvent.VK_J) {
-			InputEvent le = new InputEvent(InputKey.LEFT, FocusPlayer.PLAYER2,
-					true);
-			eventSender.sendInputEvent(le);
-		}else if (key == KeyEvent.VK_L) {
-			InputEvent le = new InputEvent(InputKey.RIGHT,
-										   FocusPlayer.PLAYER2, true);
-			eventSender.sendInputEvent(le);
-		}else if (key == KeyEvent.VK_I) {
-			InputEvent le = new InputEvent(InputKey.UP, FocusPlayer.PLAYER2,
-					true);
-			eventSender.sendInputEvent(le);
-		}else if (key == KeyEvent.VK_K) {
-			InputEvent le = new InputEvent(InputKey.DOWN, FocusPlayer.PLAYER2,
-					true);
-			eventSender.sendInputEvent(le);
-		}else if (key == KeyEvent.VK_U) {
-			InputEvent le = new InputEvent(InputKey.ATTACK1,
-					FocusPlayer.PLAYER2, true);
-			eventSender.sendInputEvent(le);
-		}else if (key == KeyEvent.VK_O) {
-			InputEvent le = new InputEvent(InputKey.ATTACK2,
-					FocusPlayer.PLAYER2, true);
-			eventSender.sendInputEvent(le);
+			eventSender.sendInputEvent(iE);
+		} else {
+			Out.print(e.getWhen() + ": key " + e.getKeyChar() + " press unrecognized");
 		}
 	}
 
 	void keyReleased(KeyEvent e) {
 		int key = e.getKeyCode();
 		
-		Out.print(e.getWhen() + ": " +"key " + e.getKeyChar()
-				+ " released");
-		if (key == KeyEvent.VK_A) {
-			InputEvent le = new InputEvent(InputKey.LEFT, FocusPlayer.PLAYER1,
-					false);
-			eventSender.sendInputEvent(le);
-		}else if (key == KeyEvent.VK_D) {
-			InputEvent le = new InputEvent(InputKey.RIGHT,
-			                               FocusPlayer.PLAYER1, false);
-			eventSender.sendInputEvent(le);
-		}else if (key == KeyEvent.VK_W) {
-			InputEvent le = new InputEvent(InputKey.UP, FocusPlayer.PLAYER1,
-					false);
-			eventSender.sendInputEvent(le);
-		}else if (key == KeyEvent.VK_S) {
-			InputEvent le = new InputEvent(InputKey.DOWN, FocusPlayer.PLAYER1,
-					false);
-			eventSender.sendInputEvent(le);
-		}else if (key == KeyEvent.VK_E) {
-			InputEvent le = new InputEvent(InputKey.ATTACK1,
-					FocusPlayer.PLAYER1, false);
-			eventSender.sendInputEvent(le);
-		}else if (key == KeyEvent.VK_Q) {
-			InputEvent le = new InputEvent(InputKey.ATTACK2,
-					FocusPlayer.PLAYER1, false);
-			eventSender.sendInputEvent(le);
-		}
-		
-		else if (key == KeyEvent.VK_J) {
-			InputEvent le = new InputEvent(InputKey.LEFT, FocusPlayer.PLAYER2,
-					false);
-			eventSender.sendInputEvent(le);
-		}else if (key == KeyEvent.VK_L) {
-			InputEvent le = new InputEvent(InputKey.RIGHT,
-										   FocusPlayer.PLAYER2, false);
-			eventSender.sendInputEvent(le);
-		}else if (key == KeyEvent.VK_I) {
-			InputEvent le = new InputEvent(InputKey.UP, FocusPlayer.PLAYER2,
-					false);
-			eventSender.sendInputEvent(le);
-		}else if (key == KeyEvent.VK_K) {
-			InputEvent le = new InputEvent(InputKey.DOWN, FocusPlayer.PLAYER2,
-					false);
-			eventSender.sendInputEvent(le);
-		}else if (key == KeyEvent.VK_U) {
-			InputEvent le = new InputEvent(InputKey.ATTACK1,
-					FocusPlayer.PLAYER2, false);
-			eventSender.sendInputEvent(le);
-		}else if (key == KeyEvent.VK_O) {
-			InputEvent le = new InputEvent(InputKey.ATTACK2,
-					FocusPlayer.PLAYER2, false);
-			eventSender.sendInputEvent(le);
+		if (keyToInputKey.containsKey(key)) {
+			InputEvent iE = new InputEvent(keyToInputKey.get(key), player, false);
+			eventSender.sendInputEvent(iE);
 		}
 	}
 }

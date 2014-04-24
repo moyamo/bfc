@@ -32,11 +32,15 @@ public class InputEventReceiver implements Runnable {
 		while (true){
 			try {
 				socket.receive(packet);
-				if (!addresses.isAddressIn(packet.getAddress())){
-					Out.print("addresses " + packet.getAddress());
-					addresses.addAddress(packet.getAddress(), 1730);
-					String packetString = Charset.availableCharsets().get("UTF-8").decode(ByteBuffer.wrap(packet.getData())).toString();
-					if (packetString.equals(Constants.HAND_SHAKE));
+				String packetString = Charset.availableCharsets()
+						.get("UTF-8")
+						.decode((ByteBuffer) ByteBuffer.wrap(packet.getData())
+								.limit(Charset.availableCharsets().get("UTF-8").encode(Constants.HAND_SHAKE).capacity())).toString();
+				if (packetString.equals(Constants.HAND_SHAKE)) {
+					if (!addresses.isAddressIn(packet.getAddress())){
+						Out.print("addresses " + packet.getAddress());
+						addresses.addAddress(packet.getAddress(), 1730);
+					}
 					continue;
 				}
 				iE = new InputEvent(packet);
@@ -50,5 +54,4 @@ public class InputEventReceiver implements Runnable {
 			}
 		}
 	}
-
 }
