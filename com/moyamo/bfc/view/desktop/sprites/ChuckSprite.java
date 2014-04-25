@@ -4,14 +4,11 @@ import java.awt.Graphics;
 import java.awt.image.ImageObserver;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
-import java.nio.charset.CharacterCodingException;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetDecoder;
 import java.util.StringTokenizer;
 
 import javax.swing.ImageIcon;
 
-import com.moyamo.bfc.debug.ExceptionDialog;
+import com.moyamo.bfc.UTF8;
 import com.moyamo.bfc.res.ImageStore;
 
 public class ChuckSprite implements IDrawablePlayer{
@@ -106,21 +103,15 @@ public class ChuckSprite implements IDrawablePlayer{
 	}
 	@Override
 	public void update(ByteBuffer buffer){
-		CharsetDecoder decoder = Charset.availableCharsets().get("UTF-8").newDecoder();
 		posX = buffer.getInt();
 		posY = buffer.getInt();
 		direction = buffer.getInt();
 		health = buffer.getInt();
 		momentum = buffer.getInt();
 		isMoving = buffer.getInt() != 0 ? true : false;
-		try {
-			CharBuffer charbuff = decoder.decode(buffer);
-			StringTokenizer tokens = new StringTokenizer(charbuff.toString());
-			setDrawFlags(tokens);
-		} catch (CharacterCodingException e) {
-			new ExceptionDialog(e);
-			return;
-		}
+		CharBuffer charbuff = UTF8.decode(buffer);
+		StringTokenizer tokens = new StringTokenizer(charbuff.toString());
+		setDrawFlags(tokens);
 	}
 	@Override
 	public int getHealth() {

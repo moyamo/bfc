@@ -5,10 +5,10 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 
 import com.moyamo.bfc.Constants;
 import com.moyamo.bfc.InputEvent;
+import com.moyamo.bfc.UTF8;
 import com.moyamo.bfc.debug.ExceptionDialog;
 import com.moyamo.bfc.debug.Out;
 
@@ -32,10 +32,10 @@ public class InputEventReceiver implements Runnable {
 		while (true){
 			try {
 				socket.receive(packet);
-				String packetString = Charset.availableCharsets()
-						.get("UTF-8")
+				String packetString = UTF8
 						.decode((ByteBuffer) ByteBuffer.wrap(packet.getData())
-								.limit(Charset.availableCharsets().get("UTF-8").encode(Constants.HAND_SHAKE).capacity())).toString();
+								.limit(UTF8.encode(Constants.HAND_SHAKE)
+										.capacity())).toString();
 				if (packetString.equals(Constants.HAND_SHAKE)) {
 					if (!addresses.isAddressIn(packet.getAddress())){
 						Out.print("addresses " + packet.getAddress());

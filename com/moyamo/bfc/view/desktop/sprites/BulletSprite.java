@@ -4,12 +4,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
-import java.nio.charset.CharacterCodingException;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetDecoder;
 import java.util.StringTokenizer;
 
-import com.moyamo.bfc.debug.ExceptionDialog;
+import com.moyamo.bfc.UTF8;
 
 public class BulletSprite implements IDrawable{
 	private boolean destroyed;
@@ -42,14 +39,8 @@ public class BulletSprite implements IDrawable{
 		x = buffer.getInt();
 		y = buffer.getInt();
 		direction = buffer.getInt();
-		CharsetDecoder decoder = Charset.availableCharsets().get("UTF-8").newDecoder();
-		try {
-			CharBuffer charbuff = decoder.decode(buffer);
-			StringTokenizer tokens = new StringTokenizer(charbuff.toString());
-			setDrawFlags(tokens);
-		} catch (CharacterCodingException e) {
-			new ExceptionDialog(e);
-			return;
-		}
+		CharBuffer charbuff = UTF8.decode(buffer);
+		StringTokenizer tokens = new StringTokenizer(charbuff.toString());
+		setDrawFlags(tokens);
 	}
 }

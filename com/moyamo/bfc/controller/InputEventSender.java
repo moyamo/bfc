@@ -5,12 +5,10 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
 
 import com.moyamo.bfc.Constants;
 import com.moyamo.bfc.InputEvent;
+import com.moyamo.bfc.UTF8;
 import com.moyamo.bfc.debug.ExceptionDialog;
 
 public class InputEventSender {
@@ -21,8 +19,7 @@ public class InputEventSender {
 		this.serverAddress = serverAddress;
 		try {
 			this.serverSocket = new DatagramSocket();
-			CharsetEncoder coder = Charset.availableCharsets().get("UTF-8").newEncoder();
-			ByteBuffer buffer = coder.encode(CharBuffer.wrap(Constants.HAND_SHAKE));
+			ByteBuffer buffer = UTF8.encode(Constants.HAND_SHAKE);
 			DatagramPacket packet =  new DatagramPacket(buffer.array(), buffer.limit(), serverAddress, 1729);
 			serverSocket.send(packet);
 		} catch (IOException  e) {

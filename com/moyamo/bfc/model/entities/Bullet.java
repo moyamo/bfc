@@ -6,6 +6,7 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 
+import com.moyamo.bfc.UTF8;
 import com.moyamo.bfc.debug.ExceptionDialog;
 import com.moyamo.bfc.model.events.DestroyedEvent;
 
@@ -32,14 +33,9 @@ public class Bullet extends Projectile{
 		buffer.putInt(getX());
 		buffer.putInt(getY());
 		buffer.putInt(getDirection());
-		CharsetEncoder encoder = Charset.availableCharsets().get("UTF-8").newEncoder();
 		for (String e = nextDrawEvent(); e != null; e = nextDrawEvent()){
 			e += " ";
-			try {
-				buffer.put(encoder.encode(CharBuffer.wrap(e.toCharArray())));
-			} catch (CharacterCodingException e1) {
-				new ExceptionDialog(e1);
-			}
+			buffer.put(UTF8.encode(e));
 		}
 		buffer.rewind();
 		return buffer;
@@ -47,12 +43,6 @@ public class Bullet extends Projectile{
 
 	@Override
 	public ByteBuffer getUniqueName() {
-		CharsetEncoder charset = Charset.availableCharsets().get("UTF-8").newEncoder();
-		try {
-			return charset.encode(CharBuffer.wrap("BULLET  "));
-		} catch (CharacterCodingException e) {
-			new ExceptionDialog(e);
-		}
-		return null;
+		return UTF8.encode("BULLET  ");
 	}
 }

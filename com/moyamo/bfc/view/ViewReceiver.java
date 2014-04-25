@@ -5,9 +5,9 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 import java.util.HashMap;
 
+import com.moyamo.bfc.UTF8;
 import com.moyamo.bfc.debug.ExceptionDialog;
 import com.moyamo.bfc.view.desktop.sprites.BulletSprite;
 
@@ -42,7 +42,7 @@ public class ViewReceiver implements Runnable {
 				} else {
 					byte name[] = new byte[8];
 					buffer.get(name, 0, 8);
-					String sname = Charset.availableCharsets().get("UTF-8").decode(ByteBuffer.wrap(name)).toString();
+					String sname = UTF8.decode(ByteBuffer.wrap(name)).toString();
 					if (sname.equals("BULLET  ")){
 						BulletSprite bullet = new BulletSprite();
 						bullet.update(buffer);
