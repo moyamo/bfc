@@ -2,11 +2,9 @@ package com.moyamo.bfc.view.desktop.sprites;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.util.StringTokenizer;
 
-import com.moyamo.bfc.UTF8;
+import com.moyamo.bfc.model.entities.Bullet;
+import com.moyamo.bfc.model.entities.Entity;
 
 public class BulletSprite implements IDrawable{
 	private boolean destroyed;
@@ -25,9 +23,8 @@ public class BulletSprite implements IDrawable{
 		return destroyed;
 	}
 	
-	private void setDrawFlags(StringTokenizer tokens) {
-		while (tokens.hasMoreTokens()){
-			String e = tokens.nextToken();
+	private void setDrawFlags(Bullet bullet) {
+		for (String e = bullet.nextDrawEvent(); e != null; e = bullet.nextDrawEvent()){
 			if(e.equals("destroy")){
 				destroyed = true;
 			}
@@ -35,12 +32,11 @@ public class BulletSprite implements IDrawable{
 	}
 
 	@Override
-	public void update(ByteBuffer buffer) {
-		x = buffer.getInt();
-		y = buffer.getInt();
-		direction = buffer.getInt();
-		CharBuffer charbuff = UTF8.decode(buffer);
-		StringTokenizer tokens = new StringTokenizer(charbuff.toString());
-		setDrawFlags(tokens);
+	public void update(Entity entity) {
+		Bullet bullet = (Bullet) entity;
+		x = bullet.getX();
+		y = bullet.getY();
+		direction = bullet.getDirection();
+		setDrawFlags(bullet);
 	}
 }

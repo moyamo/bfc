@@ -2,8 +2,8 @@ package com.moyamo.bfc.view.desktop.sprites;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.nio.ByteBuffer;
 
+import com.moyamo.bfc.model.entities.Entity;
 import com.moyamo.bfc.view.SpriteManager;
 
 public class PlayerStatBar implements IDrawable{
@@ -39,6 +39,6 @@ public class PlayerStatBar implements IDrawable{
 	}
 
 	@Override
-	public void update(ByteBuffer buffer) {}
+	public void update(Entity entity) {}
 
 }

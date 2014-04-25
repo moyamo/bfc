@@ -1,6 +1,8 @@
 package com.moyamo.bfc.model.events;
 
-public class ProjectileEvent {
+import java.io.Serializable;
+
+public class ProjectileEvent implements Serializable {
 	public int origX;
 	public int origY;
 	public int speedX;

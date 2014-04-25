@@ -2,13 +2,11 @@ package com.moyamo.bfc.view.desktop.sprites;
 
 import java.awt.Graphics;
 import java.awt.image.ImageObserver;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.util.StringTokenizer;
 
 import javax.swing.ImageIcon;
 
-import com.moyamo.bfc.UTF8;
+import com.moyamo.bfc.model.entities.BruceLee;
+import com.moyamo.bfc.model.entities.Entity;
 import com.moyamo.bfc.res.ImageStore;
 
 public class BruceSprite implements IDrawablePlayer{
@@ -88,9 +86,8 @@ public class BruceSprite implements IDrawablePlayer{
 		return false;
 	}
 	
-	private void setDrawFlags(StringTokenizer token){
-		while (token.hasMoreTokens()) {
-			String e = token.nextToken();
+	private void setDrawFlags(BruceLee bruce){
+		for (String e = bruce.nextDrawEvent(); e != null; e = bruce.nextDrawEvent()) {
 			if (e.equals("attack")){
 				attacking = true;
 			}else if (e.equals("flykick")){
@@ -99,16 +96,15 @@ public class BruceSprite implements IDrawablePlayer{
 		}
 	}
 	
-	public void update(ByteBuffer buffer){	
-		posX = buffer.getInt();
-		posY = buffer.getInt();
-		direction = buffer.getInt();
-		health = buffer.getInt();
-		momentum = buffer.getInt();
-		onGround = buffer.getInt() != 0 ? true : false;
-		CharBuffer charbuff = UTF8.decode(buffer);
-		StringTokenizer tokens = new StringTokenizer(charbuff.toString());
-		setDrawFlags(tokens);
+	public void update(Entity entity){	
+		BruceLee bruce = (BruceLee) entity;
+		posX = bruce.getX();
+		posY = bruce.getY();
+		direction = bruce.getDirection();
+		health = bruce.getHealth();
+		momentum = (int) bruce.getMomentum();
+		onGround = bruce.onGround();
+		setDrawFlags(bruce);
 	}
 
 	@Override

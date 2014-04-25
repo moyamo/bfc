@@ -1,14 +1,16 @@
 package com.moyamo.bfc.view;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
-import java.nio.ByteBuffer;
 import java.util.HashMap;
 
-import com.moyamo.bfc.UTF8;
 import com.moyamo.bfc.debug.ExceptionDialog;
+import com.moyamo.bfc.model.entities.Bullet;
+import com.moyamo.bfc.model.entities.Entity;
 import com.moyamo.bfc.view.desktop.sprites.BulletSprite;
 
 public class ViewReceiver implements Runnable {
@@ -27,30 +29,33 @@ public class ViewReceiver implements Runnable {
 	}
 	@Override
 	public void run() {
-		byte buf[] = new byte[256];
-		ByteBuffer buffer;
+		byte buf[] = new byte[4096];
+		ByteArrayInputStream byteIn = null;
+		ObjectInputStream in = null;
 		DatagramPacket packet = new DatagramPacket(buf, buf.length);
 		while (true) {
 			try {
 				serverSocket.receive(packet);
-				buffer = ByteBuffer.wrap(packet.getData());
-				Integer id = Integer.valueOf(buffer.getInt());
+				byteIn = new ByteArrayInputStream(packet.getData());
+				in = new ObjectInputStream(byteIn);
+				Integer id = Integer.valueOf(in.readInt());
+				Object entity = in.readObject();
 				if (entityToSprite.containsKey(id)) {
-					buffer.getInt();
-					buffer.getInt(); // Move pointer 8 bytes forward
-					SpriteManager.self().updateSprite(entityToSprite.get(id).intValue(), buffer);
-				} else {
-					byte name[] = new byte[8];
-					buffer.get(name, 0, 8);
-					String sname = UTF8.decode(ByteBuffer.wrap(name)).toString();
-					if (sname.equals("BULLET  ")){
+					SpriteManager.self().updateSprite(entityToSprite.get(id).intValue(), (Entity) entity);
+				} else if (entity instanceof Bullet){
 						BulletSprite bullet = new BulletSprite();
-						bullet.update(buffer);
+						bullet.update((Bullet) entity);
 						entityToSprite.put(id, Integer.valueOf(SpriteManager.self().addSprite(bullet)));
-					}
 				}
-			} catch (IOException e) {
+			} catch (IOException | ClassNotFoundException e) {
 				new ExceptionDialog(e);
+			} finally {
+				try {
+					in.close();
+					byteIn.close();
+				} catch (IOException e) {
+					new ExceptionDialog(e);
+				}
 			}
 		}
 	}

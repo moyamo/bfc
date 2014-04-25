@@ -1,5 +1,7 @@
 package com.moyamo.bfc.model.events;
 
-public class DestroyedEvent {
+import java.io.Serializable;
+
+public class DestroyedEvent implements Serializable {
 
 }

@@ -1,15 +1,13 @@
 package com.moyamo.bfc.model.entities;
 
-import java.nio.ByteBuffer;
-
 import com.moyamo.bfc.Constants;
 import com.moyamo.bfc.InputEvent;
 import com.moyamo.bfc.InputEvent.InputKey;
-import com.moyamo.bfc.UTF8;
 import com.moyamo.bfc.model.events.AttackEvent;
 
 
-public class BruceLee extends Player{
+public class BruceLee extends Player {
+	private static final long serialVersionUID = 7139437056402745707L;
 	private static final int START_HEALTH = 800;
 	private static final int REACH = 130;
 	private static final int BASIC_ATTACK_DAMAGE = 15;
@@ -74,27 +72,5 @@ public class BruceLee extends Player{
 			setY(Constants.GROUND);
 			setXSpeed(0);
 		}
-	}
-
-	@Override
-	public ByteBuffer getByteBuffer() {
-		ByteBuffer buffer = ByteBuffer.allocate(128);
-		buffer.putInt(getX());
-		buffer.putInt(getY());
-		buffer.putInt(getDirection());
-		buffer.putInt(getHealth());
-		buffer.putInt((int)getMomentum());
-		buffer.putInt(onGround() ? 1 : 0);
-		for (String e = nextDrawEvent(); e != null; e = nextDrawEvent()){
-			e += " ";
-			buffer.put(UTF8.encode(e));
-		}
-		buffer.rewind();
-		return buffer;
-	}
-
-	@Override
-	public ByteBuffer getUniqueName() {
-		return UTF8.encode("BRUCELEE");
 	}
 }

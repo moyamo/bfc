@@ -1,6 +1,8 @@
 package com.moyamo.bfc.model.events;
 
-public class AttackEvent {
+import java.io.Serializable;
+
+public class AttackEvent implements Serializable {
 	private int damage, direction;
 	private int x, y;
 	private int defenderID;

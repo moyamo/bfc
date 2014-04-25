@@ -1,5 +1,7 @@
 package com.moyamo.bfc.model.events;
 
-public class PlayerDeathEvent {
+import java.io.Serializable;
+
+public class PlayerDeathEvent implements Serializable{
 
 }

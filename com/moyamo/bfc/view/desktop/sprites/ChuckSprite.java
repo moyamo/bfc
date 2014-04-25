@@ -2,13 +2,11 @@ package com.moyamo.bfc.view.desktop.sprites;
 
 import java.awt.Graphics;
 import java.awt.image.ImageObserver;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.util.StringTokenizer;
 
 import javax.swing.ImageIcon;
 
-import com.moyamo.bfc.UTF8;
+import com.moyamo.bfc.model.entities.ChuckNorris;
+import com.moyamo.bfc.model.entities.Entity;
 import com.moyamo.bfc.res.ImageStore;
 
 public class ChuckSprite implements IDrawablePlayer{
@@ -87,9 +85,8 @@ public class ChuckSprite implements IDrawablePlayer{
 		g.drawImage(chuckImages[imageIndex].getImage(),x,y,observer);
 	}
 	
-	private void setDrawFlags(StringTokenizer tokens){
-		while(tokens.hasMoreTokens()){
-			String e = tokens.nextToken();
+	private void setDrawFlags(ChuckNorris chuck){
+		for (String e = chuck.nextDrawEvent(); e != null; e = chuck.nextDrawEvent()){
 			if (e.equals("attack")){
 				attacking = true;
 			} else if (e.equals("shoot")){
@@ -102,16 +99,15 @@ public class ChuckSprite implements IDrawablePlayer{
 		return false;
 	}
 	@Override
-	public void update(ByteBuffer buffer){
-		posX = buffer.getInt();
-		posY = buffer.getInt();
-		direction = buffer.getInt();
-		health = buffer.getInt();
-		momentum = buffer.getInt();
-		isMoving = buffer.getInt() != 0 ? true : false;
-		CharBuffer charbuff = UTF8.decode(buffer);
-		StringTokenizer tokens = new StringTokenizer(charbuff.toString());
-		setDrawFlags(tokens);
+	public void update(Entity entity){
+		ChuckNorris chuck = (ChuckNorris) entity;
+		posX = chuck.getX();
+		posY = chuck.getY();
+		direction = chuck.getDirection();
+		health = chuck.getHealth();
+		momentum = (int) chuck.getMomentum();
+		isMoving = chuck.isMoving();
+		setDrawFlags(chuck);
 	}
 	@Override
 	public int getHealth() {

@@ -1,10 +1,7 @@
 package com.moyamo.bfc.model.entities;
 
-import java.nio.ByteBuffer;
-
 import com.moyamo.bfc.InputEvent;
 import com.moyamo.bfc.InputEvent.InputKey;
-import com.moyamo.bfc.UTF8;
 import com.moyamo.bfc.model.events.ProjectileEvent;
 import com.moyamo.bfc.model.events.ProjectileEvent.projType;
 
@@ -15,7 +12,8 @@ import com.moyamo.bfc.model.events.ProjectileEvent.projType;
  * @author Mohammed Yaseen Mowzer
  *
  */
-public class ChuckNorris extends Player{
+public class ChuckNorris extends Player {
+	private static final long serialVersionUID = -5538493912696835196L;
 	private static final int START_HEALTH = 1000;
 	private static final int REACH = 130;
 	private static final int BASIC_ATTACK_DAMAGE = 20;
@@ -59,26 +57,5 @@ public class ChuckNorris extends Player{
 	@Override
 	protected int getAttackDelay() {
 		return 100;
-	}
-
-	@Override
-	public ByteBuffer getByteBuffer() {
-		ByteBuffer buffer = ByteBuffer.allocate(128);
-		buffer.putInt(getX());
-		buffer.putInt(getY());
-		buffer.putInt(getDirection());
-		buffer.putInt(getHealth());
-		buffer.putInt((int)getMomentum());
-		buffer.putInt(isMoving() ? 1 : 0);
-		for (String e = nextDrawEvent(); e != null; e = nextDrawEvent()){
-			e += " ";
-			buffer.put(UTF8.encode(e));
-		}
-		buffer.rewind();
-		return buffer;
-	}
-	@Override
-	public ByteBuffer getUniqueName() {
-		return UTF8.encode("CHUCKNRS");
 	}
 }

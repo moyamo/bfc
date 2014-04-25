@@ -3,7 +3,8 @@ package com.moyamo.bfc.view.desktop.sprites;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.ImageObserver;
-import java.nio.ByteBuffer;
+
+import com.moyamo.bfc.model.entities.Entity;
 
 public class BGSprite implements IDrawable{
 	Image image;
@@ -24,5 +25,5 @@ public class BGSprite implements IDrawable{
 	}
 
 	@Override
-	public void update(ByteBuffer buffer) {};
+	public void update(Entity entity) {};
 }

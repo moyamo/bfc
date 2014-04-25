@@ -1,11 +1,9 @@
 package com.moyamo.bfc.model.entities;
 
-import java.nio.ByteBuffer;
-
-import com.moyamo.bfc.UTF8;
 import com.moyamo.bfc.model.events.DestroyedEvent;
 
-public class Bullet extends Projectile{
+public class Bullet extends Projectile {
+	private static final long serialVersionUID = 2711231769217505652L;
 
 	public Bullet(int x, int y, int speedX, int speedY) {
 		super(x, y, 0, 0, speedX > 0 ? 1 : -1);
@@ -20,24 +18,5 @@ public class Bullet extends Projectile{
 	
 	public int getDamage(){
 		return 50;
-	}
-
-	@Override
-	public ByteBuffer getByteBuffer() {
-		ByteBuffer buffer = ByteBuffer.allocate(64);
-		buffer.putInt(getX());
-		buffer.putInt(getY());
-		buffer.putInt(getDirection());
-		for (String e = nextDrawEvent(); e != null; e = nextDrawEvent()){
-			e += " ";
-			buffer.put(UTF8.encode(e));
-		}
-		buffer.rewind();
-		return buffer;
-	}
-
-	@Override
-	public ByteBuffer getUniqueName() {
-		return UTF8.encode("BULLET  ");
 	}
 }

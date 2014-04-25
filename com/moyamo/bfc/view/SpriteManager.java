@@ -1,9 +1,9 @@
 package com.moyamo.bfc.view;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.moyamo.bfc.model.entities.Entity;
 import com.moyamo.bfc.view.desktop.sprites.IDrawable;
 
 public class SpriteManager {
@@ -31,9 +31,9 @@ public class SpriteManager {
 	public IDrawable getSprite(int i){
 		return spriteArray.get(i);
 	}
-	public void updateSprite(int i, ByteBuffer buffer) {
+	public void updateSprite(int i, Entity entity) {
 		if (getSprite(i) != null) {
-			getSprite(i).update(buffer);
+			getSprite(i).update(entity);
 		}
 	}
 	public int addSprite(IDrawable sprite){

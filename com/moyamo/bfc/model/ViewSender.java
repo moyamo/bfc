@@ -1,11 +1,12 @@
 package com.moyamo.bfc.model;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -34,14 +35,28 @@ public class ViewSender implements Runnable, AddressBook{
 			return;
 		}
 		DatagramPacket packet;
-		ByteBuffer firstbuff = ent.getByteBuffer();
-		ByteBuffer buff = ByteBuffer.allocate(256);
-		buff.putInt(id);
-		buff.put(ent.getUniqueName());
-		buff.put(firstbuff);
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+		ObjectOutputStream out = null;
+		try {
+			out = new ObjectOutputStream(bytes);
+			out.writeInt(id);
+			out.writeObject(ent);
+			ent.clearDrawEvents(); // FIXME Change draw events into flags
+		} catch (IOException e1) {
+			new ExceptionDialog(e1);
+		} finally {
+			try {
+				out.flush();
+				bytes.flush();
+				out.close();
+			} catch (IOException e) {
+				new ExceptionDialog(e);
+			}
+		}
+		byte data [] = bytes.toByteArray();
 		for (int i = 0; i < free; ++i) {
 			try {
-				packet = new DatagramPacket(buff.array(), buff.limit(), viewAddress[i], viewPort[i]);
+				packet = new DatagramPacket(data, data.length, viewAddress[i], viewPort[i]);
 				viewSocket.send(packet);
 			} catch (IOException e) {
 				new ExceptionDialog(e);
