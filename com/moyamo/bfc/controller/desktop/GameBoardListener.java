@@ -5,7 +5,6 @@ import java.awt.event.KeyListener;
 import java.net.InetAddress;
 
 import com.moyamo.bfc.InputEvent.FocusPlayer;
-import com.moyamo.bfc.debug.Out;
 import com.moyamo.bfc.view.desktop.gui.GameBoard;
 
 /**

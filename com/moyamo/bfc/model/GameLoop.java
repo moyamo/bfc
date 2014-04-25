@@ -1,8 +1,5 @@
 package com.moyamo.bfc.model;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
 import com.moyamo.bfc.model.entities.BruceLee;
 import com.moyamo.bfc.model.entities.Bullet;
 import com.moyamo.bfc.model.entities.ChuckNorris;

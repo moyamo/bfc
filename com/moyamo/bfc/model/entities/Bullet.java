@@ -1,13 +1,8 @@
 package com.moyamo.bfc.model.entities;
 
 import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.CharacterCodingException;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
 
 import com.moyamo.bfc.UTF8;
-import com.moyamo.bfc.debug.ExceptionDialog;
 import com.moyamo.bfc.model.events.DestroyedEvent;
 
 public class Bullet extends Projectile{

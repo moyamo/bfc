@@ -1,14 +1,11 @@
 package com.moyamo.bfc.model.entities;
 
 import java.nio.ByteBuffer;
-import java.nio.charset.CharacterCodingException;
-import java.nio.charset.Charset;
 
 import com.moyamo.bfc.Constants;
 import com.moyamo.bfc.InputEvent;
 import com.moyamo.bfc.InputEvent.InputKey;
 import com.moyamo.bfc.UTF8;
-import com.moyamo.bfc.debug.ExceptionDialog;
 import com.moyamo.bfc.model.events.AttackEvent;
 
 
