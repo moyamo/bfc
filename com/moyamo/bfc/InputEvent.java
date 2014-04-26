@@ -1,31 +1,28 @@
 package com.moyamo.bfc;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
-import java.nio.ByteBuffer;
 
-public class InputEvent {
+import com.moyamo.bfc.debug.ExceptionDialog;
+
+public class InputEvent implements Serializable{
+	private static final long serialVersionUID = -5585142106961981982L;
 	private InputKey inputKey;
 	private FocusPlayer focus;
 	private boolean press;
 	public enum InputKey {LEFT, RIGHT, UP, DOWN, ATTACK1, ATTACK2};
-	private InputKey InputKeysValues[] = InputKey.values();
 	public enum FocusPlayer {PLAYER1, PLAYER2};
-	private FocusPlayer FocusPlayerValues[] = FocusPlayer.values();
 
 	public InputEvent (InputKey inputKey, FocusPlayer focus, boolean press) {
 		this.inputKey = inputKey;
 		this.focus = focus;
 		this.press = press;
 	}
-	
-	public InputEvent(DatagramPacket packet){
-		ByteBuffer buf = ByteBuffer.wrap(packet.getData());
-		inputKey = InputKeysValues[buf.getInt()];
-		focus = FocusPlayerValues[buf.getInt()];
-		press = buf.getInt() == 1 ? true : false;
-	}
-	
+
 	public InputKey getInputString() {
 		return inputKey;
 	}
@@ -37,11 +34,24 @@ public class InputEvent {
 		return press;
 	}
 	public DatagramPacket toDatagramPacket(InetAddress server, int port){
-		byte bytes[] = new byte[12];
-		ByteBuffer buf = ByteBuffer.wrap(bytes);
-		buf.putInt(inputKey.ordinal());
-		buf.putInt(focus.ordinal());
-		buf.putInt(press ? 1 : 0);
+		ByteArrayOutputStream obyte = new ByteArrayOutputStream();
+		ObjectOutputStream out = null;
+		try {
+			out = new ObjectOutputStream(obyte);
+			out.writeObject(this);
+		} catch (IOException e) {
+			new ExceptionDialog(e);
+		} finally {
+			try {
+				out.flush();
+				out.close();
+				obyte.flush();
+				obyte.close();
+			} catch (IOException e) {
+				new ExceptionDialog(e);
+			}
+		}
+		byte bytes[] = obyte.toByteArray();
 		return new DatagramPacket(bytes, bytes.length, server, port);
 	}
 }

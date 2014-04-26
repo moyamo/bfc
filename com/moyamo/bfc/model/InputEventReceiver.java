@@ -1,14 +1,14 @@
 package com.moyamo.bfc.model;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
-import java.nio.ByteBuffer;
 
-import com.moyamo.bfc.Constants;
 import com.moyamo.bfc.InputEvent;
-import com.moyamo.bfc.UTF8;
+import com.moyamo.bfc.controller.HandShake;
 import com.moyamo.bfc.debug.ExceptionDialog;
 import com.moyamo.bfc.debug.Out;
 
@@ -26,30 +26,32 @@ public class InputEventReceiver implements Runnable {
 	}
 	@Override
 	public void run() {
-		byte buffer[] = new byte[12];
+		byte buffer[] = new byte[4096];
 		DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 		InputEvent iE;
 		while (true){
 			try {
 				socket.receive(packet);
-				String packetString = UTF8
-						.decode((ByteBuffer) ByteBuffer.wrap(packet.getData())
-								.limit(UTF8.encode(Constants.HAND_SHAKE)
-										.capacity())).toString();
-				if (packetString.equals(Constants.HAND_SHAKE)) {
+				ByteArrayInputStream bytes = new ByteArrayInputStream(buffer);
+				ObjectInputStream in = new ObjectInputStream(bytes);
+				Object object = in.readObject();
+				in.close();
+				if (object instanceof HandShake) {
 					if (!addresses.isAddressIn(packet.getAddress())){
 						Out.print("addresses " + packet.getAddress());
 						addresses.addAddress(packet.getAddress(), 1730);
 					}
-					continue;
-				}
-				iE = new InputEvent(packet);
-				if (iE.isPress()){
-					EventProcessor.self().pressEvent(iE);
+				} else if (object instanceof InputEvent){
+					iE = (InputEvent) object;
+					if (iE.isPress()){
+						EventProcessor.self().pressEvent(iE);
+					} else {
+						EventProcessor.self().releaseEvent(iE);
+					}
 				} else {
-					EventProcessor.self().releaseEvent(iE);
+					Out.print("Unkown packet type");
 				}
-			} catch (IOException e) {
+			} catch (IOException | ClassNotFoundException e) {
 				new ExceptionDialog(e);
 			}
 		}
