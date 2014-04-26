@@ -14,6 +14,7 @@ public class GameMenu extends JFrame{
 	JPanel mainPanel;
 	JButton singlePlayer;
 	JButton directIP;
+	JButton hostGame;
 	JButton multiplayer;
 	JButton server;
 	JTextField ip;
@@ -24,12 +25,14 @@ public class GameMenu extends JFrame{
 		singlePlayer = new JButton("Single Player");
 		ip = new JTextField(16);
 		directIP = new JButton("Direct IP Connect");
-		server = new JButton("Server");
+		hostGame = new JButton("Host Game");
+		server = new JButton("Headless Server");
 		multiplayer = new JButton("Multiplayer");
 		status = new JLabel();
 		
 		singlePlayer.addActionListener(new GameMenuListener(this));
 		directIP.addActionListener(new GameMenuListener(this));
+		hostGame.addActionListener(new GameMenuListener(this));
 		server.addActionListener(new GameMenuListener(this));
 		multiplayer.addActionListener(new GameMenuListener(this));
 	
@@ -40,6 +43,7 @@ public class GameMenu extends JFrame{
 		mainPanel.add(singlePlayer);
 		mainPanel.add(ip);
 		mainPanel.add(directIP);
+		mainPanel.add(hostGame);
 		mainPanel.add(server);
 		mainPanel.add(multiplayer);
 		mainPanel.add(status);

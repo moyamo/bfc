@@ -3,6 +3,7 @@ package com.moyamo.bfc.view.desktop.gui;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Toolkit;
+import java.awt.event.KeyListener;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -39,16 +40,15 @@ public class GameBoard extends JComponent implements Constants, Runnable{
 	Thread receiver;
 	Thread viewerThread;
 	long timeSince;
-	public GameBoard(InetAddress serverAddress) {
+	public GameBoard(InetAddress serverAddress, KeyListener listeners[]) {
 		receiver = new Thread(new ViewReceiver());
 		receiver.setName("viewerReceiverThread");
 		viewerThread = new Thread(this);
 		viewerThread.setName("viewerThread");
 		sendViewHandshake(serverAddress);
-		addKeyListener(new GameBoardListener(serverAddress, FocusPlayer.PLAYER2,
-				1));
-		addKeyListener(new GameBoardListener(serverAddress, FocusPlayer.PLAYER1,
-				0));
+		for (int i = 0; i < listeners.length; ++i) {
+			addKeyListener(listeners[i]);
+		}
 		setDoubleBuffered(true);
 		setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
 		setMinimumSize(getPreferredSize());

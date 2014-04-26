@@ -1,5 +1,6 @@
 package com.moyamo.bfc.view.desktop.gui;
 
+import java.awt.event.KeyListener;
 import java.net.InetAddress;
 
 import javax.swing.JFrame;
@@ -17,9 +18,9 @@ import com.moyamo.bfc.debug.Out;
  */
 public class GameFrame extends JFrame implements Constants{
 	
-	public GameFrame(InetAddress serverAddress) {
+	public GameFrame(InetAddress serverAddress, KeyListener listeners[]) {
 		String title = GAME_NAME;
-		GameBoard game = new GameBoard(serverAddress);
+		GameBoard game = new GameBoard(serverAddress, listeners);
 		add(game);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setResizable(false);
