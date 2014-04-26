@@ -33,7 +33,7 @@ class GameMenuListener implements ActionListener{
 			} else if (pressed == parent.hostGame) {
 				startServer();
 				try {
-					KeyListener listeners[] = {new GameBoardListener(InetAddress.getByName(parent.ip.getText()), FocusPlayer.PLAYER1, 0)};
+					KeyListener listeners[] = {new GameBoardListener(InetAddress.getLoopbackAddress(), FocusPlayer.PLAYER1, 0)};
 					startClient(InetAddress.getByName(parent.ip.getText()), listeners);
 				} catch (UnknownHostException e1) {
 					parent.status.setText("Unknown Host");
