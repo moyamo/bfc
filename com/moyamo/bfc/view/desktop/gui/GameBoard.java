@@ -3,6 +3,11 @@ package com.moyamo.bfc.view.desktop.gui;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Toolkit;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.Iterator;
 import java.util.List;
@@ -39,6 +44,7 @@ public class GameBoard extends JComponent implements Constants, Runnable{
 		receiver.setName("viewerReceiverThread");
 		viewerThread = new Thread(this);
 		viewerThread.setName("viewerThread");
+		sendViewHandshake(serverAddress);
 		addKeyListener(new GameBoardListener(serverAddress, FocusPlayer.PLAYER2,
 				1));
 		addKeyListener(new GameBoardListener(serverAddress, FocusPlayer.PLAYER1,
@@ -49,8 +55,23 @@ public class GameBoard extends JComponent implements Constants, Runnable{
 		RepeatingReleasedEventsFixer rref = new RepeatingReleasedEventsFixer();
 		rref.install();
 	}
-
 	
+	private void sendViewHandshake(InetAddress serverAddress) {
+		ByteArrayOutputStream obyte = new ByteArrayOutputStream();
+		try {
+			ObjectOutputStream out = new ObjectOutputStream(obyte);
+			out.writeObject(new ViewerHandShake(1730));
+			out.flush();
+			out.close();
+			DatagramSocket socket = new DatagramSocket();
+			byte bytes[] = obyte.toByteArray();
+			socket.send(new DatagramPacket(bytes, bytes.length, serverAddress, 1729));
+			socket.close();
+		} catch (IOException e) {
+			new ExceptionDialog(e);
+		}
+	}
+
 	/**
 	 * Begins running the game.
 	 */
@@ -82,7 +103,6 @@ public class GameBoard extends JComponent implements Constants, Runnable{
 				entity.draw(g, timeDiff);
 			}
 		}
-		System.out.println(timeDiff);
 		timeSince = System.currentTimeMillis();
 	}
 
@@ -93,8 +113,6 @@ public class GameBoard extends JComponent implements Constants, Runnable{
 		Toolkit.getDefaultToolkit().sync();
 		g.dispose();
 	}
-	
-
 
 	@Override
 	public void run() {

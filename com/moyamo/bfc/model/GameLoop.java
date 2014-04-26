@@ -30,6 +30,7 @@ public class GameLoop implements Runnable{
 	private EventProcessor evProc = EventProcessor.self();
 	private CollisionDetector colDetect = new CollisionDetector();
 	private ViewSender sender;
+	private AddressBook book;
 	/**
 	 * Creates and instance of the GameEngine. It requires a {@link com.moyamo.bfc.GameHolder GameHolder} to draw images.
 	 * 
@@ -39,12 +40,14 @@ public class GameLoop implements Runnable{
 		game = new Thread(this);
 		game.setName("loopThread");
 		gameRunning = false;
-
-		sender = new ViewSender();
+		
+		book = new AddressBook();
+		
+		sender = new ViewSender(book);
 		senderThread = new Thread(sender);
 		senderThread.setName("entitySenderThread");
 		
-		eventReceiver = new Thread(new InputEventReceiver(sender));
+		eventReceiver = new Thread(new InputEventReceiver(book));
 		eventReceiver.setName("serverReceiverThread");
 		
 		aHandler = new AttackHandler();

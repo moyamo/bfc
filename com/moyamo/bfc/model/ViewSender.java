@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -13,16 +12,14 @@ import java.util.Queue;
 import com.moyamo.bfc.debug.ExceptionDialog;
 import com.moyamo.bfc.model.entities.Entity;
 
-public class ViewSender implements Runnable, AddressBook{
-	private InetAddress viewAddress[];
-	private int viewPort[];
+public class ViewSender implements Runnable {
 	private DatagramSocket viewSocket;
 	private Queue<Entity> entityQueue = new LinkedList<Entity>();
 	private Queue<Integer> idQueue = new LinkedList<Integer>();
+	private AddressBook addrBook;
 	
-	ViewSender(){
-		this.viewAddress = new InetAddress[2];
-		this.viewPort = new int[2];
+	ViewSender(AddressBook addressBook){
+		this.addrBook = addressBook;
 		try {
 			this.viewSocket = new DatagramSocket();
 		} catch (SocketException e) {
@@ -31,9 +28,6 @@ public class ViewSender implements Runnable, AddressBook{
 	}
 	
 	synchronized void sendEntity(Entity ent, int id) {
-		if (viewAddress == null){
-			return;
-		}
 		DatagramPacket packet;
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 		ObjectOutputStream out = null;
@@ -54,9 +48,9 @@ public class ViewSender implements Runnable, AddressBook{
 			}
 		}
 		byte data [] = bytes.toByteArray();
-		for (int i = 0; i < free; ++i) {
+		for (int i = 0; i < addrBook.viewLength(); ++i) {
 			try {
-				packet = new DatagramPacket(data, data.length, viewAddress[i], viewPort[i]);
+				packet = new DatagramPacket(data, data.length, addrBook.getViewAddress(i));
 				viewSocket.send(packet);
 			} catch (IOException e) {
 				new ExceptionDialog(e);
@@ -81,23 +75,5 @@ public class ViewSender implements Runnable, AddressBook{
 			}
 			sendEntity(entityQueue.remove(), idQueue.remove());
 		}
-	}
-	private int free = 0;
-	public void addAddress(InetAddress address, int port) {
-		this.viewAddress[free] = address;
-		this.viewPort[free] = port;
-		++free;
-	}
-
-	@Override
-	public boolean isAddressIn(InetAddress address) {
-		if (free >= 2) {
-			return true;
-		} else if (free == 0) {
-			return false;
-		} else if (viewAddress[0].equals(address)) {
-			return true;
-		}
-		return false;
 	}
 }

@@ -25,7 +25,7 @@ class EventPasser{
 	private Map<Integer, InputKey> keyToInputKey;
 	
 	public EventPasser(InetAddress serverAddress, FocusPlayer player) {
-		this.eventSender = new InputEventSender(serverAddress);
+		this.eventSender = new InputEventSender(serverAddress, player);
 		this.player = player;
 		this.keyToInputKey = new TreeMap<Integer, InputKey>();
 	}

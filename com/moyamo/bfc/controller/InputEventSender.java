@@ -8,19 +8,20 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 
 import com.moyamo.bfc.InputEvent;
+import com.moyamo.bfc.InputEvent.FocusPlayer;
 import com.moyamo.bfc.debug.ExceptionDialog;
 
 public class InputEventSender {
 	private DatagramSocket serverSocket;
 	private InetAddress serverAddress;
 	
-	public InputEventSender (InetAddress serverAddress){
+	public InputEventSender (InetAddress serverAddress, FocusPlayer player){
 		this.serverAddress = serverAddress;
 		try {
 			this.serverSocket = new DatagramSocket();
 			ByteArrayOutputStream obyte = new ByteArrayOutputStream();
 			ObjectOutputStream out = new ObjectOutputStream(obyte);
-			out.writeObject(new HandShake());
+			out.writeObject(new ControllerHandShake(player));
 			out.flush();
 			out.close();
 			byte buffer[] = obyte.toByteArray();
